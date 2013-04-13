@@ -23,7 +23,7 @@ public class RequestLine
 
     static public RequestLine parse( String str )
     {
-        String[] tokens = str.split( "[ \t]" );
+        String[] tokens = str.split( "[ \t]+" );
         
             //TODO: Support HTTP 0.9 with no http version token.
         if ( tokens.length != 3 )

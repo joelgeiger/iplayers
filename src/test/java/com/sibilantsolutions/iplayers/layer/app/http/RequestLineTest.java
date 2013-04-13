@@ -22,6 +22,14 @@ public class RequestLineTest
         assertEquals( HttpMethod.GET, rl.getMethod() );
     }
 
+    @Test
+    public void testParse_bigGaps()
+    {
+        RequestLine rl = RequestLine.parse( "GET                foo        \t\t\t\t    bar     " );
+        assertNotNull( rl );
+        assertEquals( HttpMethod.GET, rl.getMethod() );
+    }
+
     @Test( expected = IllegalArgumentException.class )
     public void testParse_invalidMethod()
     {

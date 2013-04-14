@@ -33,7 +33,6 @@ public class RequestLineTest
     @Test( expected = IllegalArgumentException.class )
     public void testParse_invalidMethod()
     {
-        String sample = loadResource( "/samples/RequestLine1.txt" );
         RequestLine.parse( "INVALIDMETHOD foo bar" );
     }
     

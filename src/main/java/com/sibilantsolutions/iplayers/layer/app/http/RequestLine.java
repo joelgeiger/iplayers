@@ -2,6 +2,10 @@ package com.sibilantsolutions.iplayers.layer.app.http;
 
 public class RequestLine
 {
+    final static public int MAX_METHOD_LEN = 128;       //TODO
+    final static public int MAX_REQUEST_URI_LEN = 1024; //TODO
+    final static public int MAX_HTTP_VERSION_LEN = 32;  //TODO
+    
     private HttpMethod method;
     private String requestUri;
     private String httpVersion;
@@ -31,6 +35,8 @@ public class RequestLine
         
         RequestLine rl = new RequestLine();
         rl.method = HttpMethod.valueOf( tokens[0] );
+        rl.requestUri = tokens[1];
+        rl.httpVersion = tokens[2];
         
         return rl;
     }

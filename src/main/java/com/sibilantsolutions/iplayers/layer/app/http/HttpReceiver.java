@@ -1,12 +1,14 @@
 package com.sibilantsolutions.iplayers.layer.app.http;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +37,20 @@ public class HttpReceiver implements SocketListenerI
     @Override
     public void onReceive( ReceiveEvt evt )
     {
-        Charset cs = Charset.forName( "US-ASCII" );
-        String s = new String( evt.getData(), evt.getOffset(), evt.getLength(), cs );
+        //Charset cs = Charset.forName( "US-ASCII" );
+        //String s = new String( evt.getData(), evt.getOffset(), evt.getLength(), cs );
+        ByteArrayInputStream bis = new ByteArrayInputStream( evt.getData(), evt.getOffset(), evt.getLength() );
+        BufferedReader br = new BufferedReader( new InputStreamReader( bis ) );
+        String s;
+        try
+        {
+            s = br.readLine();
+        }
+        catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            throw new UnsupportedOperationException( "OGTE TODO!", e );
+        }
         RequestLine requestLine = RequestLine.parse( s );
         
 //        byte[] data = evt.getData();

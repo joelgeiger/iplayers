@@ -1,4 +1,6 @@
-package com.sibilantsolutions.iplayers.layer.app.http;
+package com.sibilantsolutions.iplayers.layer.app.http.domain;
+
+import com.sibilantsolutions.iplayers.layer.app.http.HttpMethod;
 
 public class RequestLine
 {

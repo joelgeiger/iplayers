@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sibilantsolutions.iptools.event.ReceiveEvt;
 import com.sibilantsolutions.iptools.event.SocketListenerI;
+import com.sibilantsolutions.iplayers.layer.app.http.domain.RequestLine;
 
 
 //TODO: Enforce maximum length of method/uri/version/overall request line.

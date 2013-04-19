@@ -1,4 +1,4 @@
-package com.sibilantsolutions.iplayers.layer.app.http;
+package com.sibilantsolutions.iplayers.layer.app.http.domain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.junit.Test;
+
+import com.sibilantsolutions.iplayers.layer.app.http.HttpMethod;
 
 public class RequestLineTest
 {

@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -18,6 +15,7 @@ import com.sibilantsolutions.iptools.event.ReceiveEvt;
 import com.sibilantsolutions.iptools.event.SocketListenerI;
 import com.sibilantsolutions.iplayers.layer.app.http.domain.HttpHeaders;
 import com.sibilantsolutions.iplayers.layer.app.http.domain.RequestLine;
+import com.sibilantsolutions.iptools.util.Socker;
 
 
 //TODO: Enforce maximum length of method/uri/version/overall request line.
@@ -84,20 +82,17 @@ public class HttpReceiver implements SocketListenerI
                         String responseLine = "HTTP/1.1 200 OK" + Constants.CRLF;
                         try
                         {
-                            OutputStream os = evt.getSource().getOutputStream();
-                            Writer w = new OutputStreamWriter( os );
-                            w.write( responseLine );
-                            w.write( HttpHeaders.DATE + ": " + HttpDateFormat.format( new Date() ) + Constants.CRLF );
-                            w.write( HttpHeaders.CONTENT_LENGTH + ": " + length + Constants.CRLF );
+                            Socker.send( responseLine, evt.getSource() );
+                            Socker.send( HttpHeaders.DATE + ": " + HttpDateFormat.format( new Date() ) + Constants.CRLF, evt.getSource() );
+                            Socker.send( HttpHeaders.CONTENT_LENGTH + ": " + length + Constants.CRLF, evt.getSource() );
                             //TODO: Headers here.
-                            w.write( Constants.CRLF );
-                            w.flush();
-                            
+                            Socker.send( Constants.CRLF, evt.getSource() );
+
                             byte[] buf = new byte[1024];
                             int numRead;
                             while ( ( numRead = fis.read( buf ) ) != -1 )
                             {
-                                os.write( buf, 0, numRead );
+                                Socker.send( buf, 0, numRead, evt.getSource() );
                             }
                         }
                         catch ( IOException e )

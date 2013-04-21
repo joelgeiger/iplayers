@@ -9,12 +9,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sibilantsolutions.iptools.event.ReceiveEvt;
 import com.sibilantsolutions.iptools.event.SocketListenerI;
+import com.sibilantsolutions.iplayers.layer.app.http.domain.HttpHeaders;
 import com.sibilantsolutions.iplayers.layer.app.http.domain.RequestLine;
 
 
@@ -85,7 +87,8 @@ public class HttpReceiver implements SocketListenerI
                             OutputStream os = evt.getSource().getOutputStream();
                             Writer w = new OutputStreamWriter( os );
                             w.write( responseLine );
-                            w.write( "Content-Length: " + length + Constants.CRLF );
+                            w.write( HttpHeaders.DATE + ": " + HttpDateFormat.format( new Date() ) + Constants.CRLF );
+                            w.write( HttpHeaders.CONTENT_LENGTH + ": " + length + Constants.CRLF );
                             //TODO: Headers here.
                             w.write( Constants.CRLF );
                             w.flush();

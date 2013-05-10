@@ -1,5 +1,9 @@
 package com.sibilantsolutions.iplayers.layer.app.irc;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Properties;
 
@@ -8,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sibilantsolutions.iptools.event.ReceiveEvt;
 import com.sibilantsolutions.iptools.event.SocketListenerI;
+import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcLine;
 import com.sibilantsolutions.iptools.util.Socker;
 
 public class IrcClient
@@ -51,11 +56,34 @@ public class IrcClient
             @Override
             public void onReceive( ReceiveEvt evt )
             {
-                // TODO Auto-generated method stub
-                //throw new UnsupportedOperationException( "OGTE TODO!" );
+                doReceive( evt );
             }
         };
         Socker.readLoopThread( socket, l );
+    }
+
+    private void doReceive( ReceiveEvt evt )
+    {
+        //TODO: Handle partial receives.
+        ByteArrayInputStream bis = new ByteArrayInputStream( evt.getData(), evt.getOffset(), evt.getLength() );
+        InputStreamReader isr = new InputStreamReader( bis );
+        BufferedReader reader = new BufferedReader( isr );
+        
+        String line;
+        
+        try
+        {
+            while ( ( line = reader.readLine() ) != null )
+            {
+                log.info( "The line={}", line );
+                IrcLine ircLine = IrcLineParser.parse( line );
+            }
+        }
+        catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            throw new UnsupportedOperationException( "OGTE TODO!", e );
+        }
     }
 
 }

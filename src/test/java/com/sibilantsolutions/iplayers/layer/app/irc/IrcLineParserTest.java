@@ -72,4 +72,14 @@ public class IrcLineParserTest
         assertEquals( "Bumps +ix", line.getParameters() );
     }
 
+    @Test
+    public void testParse5()
+    {
+        IrcLine line = IrcLineParser.parse( ":nutime.de.SpotChat.org 376 Bumps :End of message of the day." );
+
+        assertEquals( "nutime.de.SpotChat.org", line.getPrefix() );
+        assertEquals( "376", line.getCommand() );
+        assertEquals( "Bumps :End of message of the day.", line.getParameters() );
+    }
+
 }

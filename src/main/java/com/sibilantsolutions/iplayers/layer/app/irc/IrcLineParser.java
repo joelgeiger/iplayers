@@ -1,5 +1,6 @@
 package com.sibilantsolutions.iplayers.layer.app.irc;
 
+import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcAddress;
 import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcLine;
 
 public class IrcLineParser
@@ -36,6 +37,47 @@ public class IrcLineParser
         ircLine.setParameters( nullIfEmpty( params ) );
 
         return ircLine;
+    }
+
+    /*package*/ public static IrcAddress parseAddress( String addr )
+    {
+        final char userSep = '!';
+        final char hostSep = '@';
+
+        int uIndex = addr.indexOf( userSep );
+        int hIndex = addr.indexOf( hostSep );
+
+        String server = null;
+        String nick = null;
+        String user = null;
+        String host = null;
+
+        if ( uIndex > -1 )
+        {
+            nick = addr.substring( 0, uIndex );
+
+            if ( hIndex > -1 )
+            {
+                user = addr.substring( uIndex + 1, hIndex );
+                host = addr.substring( hIndex + 1 );
+            }
+            else
+            {
+                user = addr.substring( uIndex + 1 );
+            }
+        }
+        else
+        {
+            server = addr;
+        }
+
+        IrcAddress ia = new IrcAddress();
+        ia.setServer( server );
+        ia.setNick( nick );
+        ia.setUser( user );
+        ia.setHost( host );
+
+        return ia;
     }
 
     static private String nullIfEmpty( String str )

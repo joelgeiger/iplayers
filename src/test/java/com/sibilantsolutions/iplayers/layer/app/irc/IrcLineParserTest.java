@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
+import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcAddress;
 import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcLine;
 
 public class IrcLineParserTest
@@ -80,6 +81,39 @@ public class IrcLineParserTest
         assertEquals( "nutime.de.SpotChat.org", line.getPrefix() );
         assertEquals( "376", line.getCommand() );
         assertEquals( "Bumps :End of message of the day.", line.getParameters() );
+    }
+
+    @Test
+    public void testParseAddress01()
+    {
+        IrcAddress a = IrcLineParser.parseAddress( "nutime.de.SpotChat.org" );
+
+        assertEquals( "nutime.de.SpotChat.org", a.getServer() );
+        assertNull( a.getNick() );
+        assertNull( a.getUser() );
+        assertNull( a.getHost() );
+    }
+
+    @Test
+    public void testParseAddress02()
+    {
+        IrcAddress a = IrcLineParser.parseAddress( "Bumps!assum@SpotChat-hjuu7s.pa.comcast.net" );
+
+        assertNull( a.getServer() );
+        assertEquals( "Bumps", a.getNick() );
+        assertEquals( "assum", a.getUser() );
+        assertEquals( "SpotChat-hjuu7s.pa.comcast.net", a.getHost() );
+    }
+
+    @Test
+    public void testParseAddress03()
+    {
+        IrcAddress a = IrcLineParser.parseAddress( "InfoServ!InfoServ@services.SpotChat.org" );
+
+        assertNull( a.getServer() );
+        assertEquals( "InfoServ", a.getNick() );
+        assertEquals( "InfoServ", a.getUser() );
+        assertEquals( "services.SpotChat.org", a.getHost() );
     }
 
 }

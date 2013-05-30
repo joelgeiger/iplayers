@@ -67,6 +67,11 @@
     	<optional>true</optional>
     </dependency>
     <dependency>
+    	<groupId>com.beust</groupId>
+    	<artifactId>jcommander</artifactId>
+    	<version>1.30</version>
+    </dependency>
+    <dependency>
       <groupId>com.sibilantsolutions.iptools</groupId>
       <artifactId>iptools</artifactId>
       <version>0.0.1-SNAPSHOT</version>

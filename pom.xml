@@ -72,6 +72,11 @@
     	<version>1.30</version>
     </dependency>
     <dependency>
+    	<groupId>args4j</groupId>
+    	<artifactId>args4j</artifactId>
+    	<version>2.0.23</version>
+    </dependency>
+    <dependency>
       <groupId>com.sibilantsolutions.iptools</groupId>
       <artifactId>iptools</artifactId>
       <version>0.0.1-SNAPSHOT</version>

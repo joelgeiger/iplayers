@@ -44,7 +44,9 @@ public class IrcClient
         Socker.send( "NICK " + userNick + CRLF, socket );
         Socker.send( "USER " + userUsername + ' ' + userUsername + ' ' + hostName + " :" + userRealName + CRLF, socket );
 
-        Socker.readLoopThread( socket, new IrcReceiver() );
+        IrcReceiver listener = new IrcReceiver();
+        listener.setIrcDataProc( new IrcDataProc() );
+        Socker.readLoopThread( socket, listener );
     }
 
 }

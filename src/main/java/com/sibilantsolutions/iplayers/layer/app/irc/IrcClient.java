@@ -6,6 +6,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sibilantsolutions.iptools.util.LineParserBuffer;
 import com.sibilantsolutions.iptools.util.Socker;
 
 public class IrcClient
@@ -44,8 +45,8 @@ public class IrcClient
         Socker.send( "NICK " + userNick + CRLF, socket );
         Socker.send( "USER " + userUsername + ' ' + userUsername + ' ' + hostName + " :" + userRealName + CRLF, socket );
 
-        IrcReceiver listener = new IrcReceiver();
-        listener.setIrcDataProc( new IrcDataProc() );
+        LineParserBuffer listener = new LineParserBuffer();
+        listener.setReceiver( new IrcDataProc() );
         Socker.readLoopThread( socket, listener );
     }
 

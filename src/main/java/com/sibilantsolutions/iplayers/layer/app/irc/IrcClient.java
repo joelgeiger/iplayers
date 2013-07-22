@@ -6,6 +6,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandFactory;
 import com.sibilantsolutions.iptools.util.LineParserBuffer;
 import com.sibilantsolutions.iptools.util.Socker;
 
@@ -46,7 +47,11 @@ public class IrcClient
         Socker.send( "USER " + userUsername + ' ' + userUsername + ' ' + hostName + " :" + userRealName + CRLF, socket );
 
         LineParserBuffer listener = new LineParserBuffer();
-        listener.setReceiver( new IrcDataProc() );
+        IrcDataProc idp = new IrcDataProc();
+        CommandFactory cf = new CommandFactory();
+        cf.setServerStatus( new LogServerStatusImpl() );
+        idp.setCommandFactory( cf );
+        listener.setReceiver( idp );
         Socker.readLoopThread( socket, listener );
     }
 

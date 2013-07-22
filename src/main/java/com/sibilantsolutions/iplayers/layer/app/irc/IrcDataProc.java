@@ -1,17 +1,17 @@
 package com.sibilantsolutions.iplayers.layer.app.irc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sibilantsolutions.iptools.event.ReceiveEvt;
 import com.sibilantsolutions.iptools.event.SocketListenerI;
 import com.sibilantsolutions.iplayers.layer.app.irc.command.Command;
 import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandContext;
+import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandFactory;
 import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcLine;
 
 public class IrcDataProc implements SocketListenerI
 {
-    final static private Logger log = LoggerFactory.getLogger( IrcDataProc.class );
+    //final static private Logger log = LoggerFactory.getLogger( IrcDataProc.class );
+
+    private CommandFactory commandFactory;
 
     @Override
     public void onReceive( ReceiveEvt evt )
@@ -33,7 +33,7 @@ public class IrcDataProc implements SocketListenerI
             log.error( "Unexpected command=" + ircLine.getCommand(), e );
         }
 */
-
+/*
             //e.g. "com.sibilantsolutions.iplayers.layer.app.irc.command"
         String commandPackage = Command.class.getPackage().getName();
             //e.g. "com.sibilantsolutions.iplayers.layer.app.irc.command.CMD_ERROR"
@@ -49,6 +49,26 @@ public class IrcDataProc implements SocketListenerI
             // TODO Auto-generated catch block
             //throw new UnsupportedOperationException( "OGTE TODO!", e1 );
         }
+*/
+        Command command = commandFactory.buildCommand( ircLine.getCommand() );
 
+        try
+        {
+            command.execute( new CommandContext( ircLine, evt ) );
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public CommandFactory getCommandFactory()
+    {
+        return commandFactory;
+    }
+
+    public void setCommandFactory( CommandFactory commandFactory )
+    {
+        this.commandFactory = commandFactory;
     }
 }

@@ -3,16 +3,13 @@ package com.sibilantsolutions.iplayers.layer.app.irc;
 import java.net.Socket;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandFactory;
 import com.sibilantsolutions.iptools.util.LineParserBuffer;
 import com.sibilantsolutions.iptools.util.Socker;
 
 public class IrcClient
 {
-    final static private Logger log = LoggerFactory.getLogger( IrcClient.class );
+    //final static private Logger log = LoggerFactory.getLogger( IrcClient.class );
 
     final static public String USER_NICK = "user.nick";
     final static public String USER_USERNAME = "user.username";
@@ -30,18 +27,7 @@ public class IrcClient
         String hostName = properties.getProperty( HOST_NAME );
         int hostPort = Integer.parseInt( properties.getProperty( HOST_PORT ) );
 
-        Socket socket;
-        try
-        {
-            log.info( "Connecting to host={}:{}.", hostName, hostPort );
-            socket = new Socket( hostName, hostPort );
-            log.info( "Connected to host={}.", socket );
-        }
-        catch ( Exception e )
-        {
-            // TODO Auto-generated catch block
-            throw new UnsupportedOperationException( "OGTE TODO!", e );
-        }
+        Socket socket = Socker.connect( hostName, hostPort );
 
         Socker.send( "NICK " + userNick + CRLF, socket );
         Socker.send( "USER " + userUsername + ' ' + userUsername + ' ' + hostName + " :" + userRealName + CRLF, socket );

@@ -32,4 +32,9 @@ public class IrcLine
         this.parameters = parameters;
     }
 
+    @Override
+    public String toString()
+    {
+        return "PREFIX=\"" + prefix + "\", COMMAND=\"" + command + "\", PARAMETERS=\"" + parameters + "\"";
+    }
 }

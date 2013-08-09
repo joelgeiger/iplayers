@@ -1,10 +1,14 @@
 package com.sibilantsolutions.iplayers.layer.app.irc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcAddress;
 import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcLine;
 
 public class IrcLineParser
 {
+    final static private Logger log = LoggerFactory.getLogger( IrcLineParser.class );
 
     public static IrcLine parse( String line )
     {
@@ -35,6 +39,8 @@ public class IrcLineParser
         ircLine.setPrefix( nullIfEmpty( prefix ) );
         ircLine.setCommand( nullIfEmpty( command ) );
         ircLine.setParameters( nullIfEmpty( params ) );
+
+        log.debug( "Parsed line={}", ircLine );
 
         return ircLine;
     }

@@ -53,6 +53,18 @@ public class IrcClient
         idp.setCommandFactory( cf );
         listener.setReceiver( idp );
         Socker.readLoopThread( socket, listener );
+
+//        log.info( "Sleeping..." );
+//        try
+//        {
+//            Thread.sleep( 5 * 1000 );
+//        }
+//        catch ( InterruptedException ignored )
+//        {
+//        }
+//        log.info( "...Awake." );
+//
+//        Socker.send( "JOIN #mytest123abc" + CRLF, socket );
     }
 
 }

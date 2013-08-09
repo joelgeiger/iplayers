@@ -32,6 +32,19 @@ public class CommandFactory
             case "NOTICE":
                 return new ServerStatusCommand( serverStatus );
 
+
+            case "433":
+            case "451":
+                return new ServerStatusCommand( serverStatus );
+
+            case "353":
+            case "366":
+                return new ServerStatusCommand( serverStatus );
+
+            case "JOIN":
+            case "PRIVMSG":
+                return new ServerStatusCommand( serverStatus );
+
             case "PING":
                 return new CMD_PING();
 

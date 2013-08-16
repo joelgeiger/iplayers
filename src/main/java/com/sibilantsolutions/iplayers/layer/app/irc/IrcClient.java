@@ -9,7 +9,7 @@ import com.sibilantsolutions.iptools.util.Socker;
 
 public class IrcClient
 {
-    //final static private Logger log = LoggerFactory.getLogger( IrcClient.class );
+//    final static private Logger log = LoggerFactory.getLogger( IrcClient.class );
 
     final static public String USER_NICK = "user.nick";
     final static public String USER_USERNAME = "user.username";
@@ -50,7 +50,36 @@ public class IrcClient
 //        }
 //        log.info( "...Awake." );
 //
-//        Socker.send( "JOIN #mytest123abc" + CRLF, socket );
+//        final String CHANNEL = "#mytest123abc";
+//        Socker.send( "JOIN " + CHANNEL + CRLF, socket );
+//
+//
+//        log.info( "Sleeping..." );
+//        try
+//        {
+//            Thread.sleep( 5 * 1000 );
+//        }
+//        catch ( InterruptedException ignored )
+//        {
+//        }
+//        log.info( "...Awake." );
+//
+//        String msg = "Hello, how are you?";
+//        Socker.send( "PRIVMSG " + CHANNEL + " :" + msg + CRLF, socket );
+//
+//
+//        log.info( "Sleeping..." );
+//        try
+//        {
+//            Thread.sleep( 5 * 1000 );
+//        }
+//        catch ( InterruptedException ignored )
+//        {
+//        }
+//        log.info( "...Awake." );
+//
+//        Socker.send( "PRIVMSG " + "unicrown`" + " :" + "Frogger." + CRLF, socket );
+
     }
 
 }

@@ -21,7 +21,7 @@ public class HandshakeProtocol extends ProtocolMessage
         return data;
     }
 
-    public static ProtocolMessage parse( String str )
+    public static HandshakeProtocol parse( String str )
     {
         HandshakeProtocol h = new HandshakeProtocol();
 

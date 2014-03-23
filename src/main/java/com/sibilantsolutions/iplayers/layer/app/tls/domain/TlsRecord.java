@@ -56,7 +56,7 @@ public class TlsRecord
 
         final int HEADER_LEN = 5;   //content type, version, length
 
-        while ( i + HEADER_LEN < r.length )
+        while ( i < r.length + HEADER_LEN )
         {
             switch( r.contentType )
             {

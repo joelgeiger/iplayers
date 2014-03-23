@@ -30,6 +30,63 @@ public class TlsRecordTest
 
     }
 
+    @Test
+    public void testParse2()
+    {
+        String serverHello = loadResource( "/samples/server_hello01.bin" );
+
+        assertEquals( 86, serverHello.length() );
+        TlsRecord record = TlsRecord.parse( serverHello );
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x0051, record.getLength() ); //81
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
+        assertEquals( HandshakeMessageType.ServerHello, hand.getHandshakeMessageType() );
+        assertEquals( 0x00004D, hand.getLength() ); //77
+        assertEquals( 0x00004D, hand.getData().length() );
+
+    }
+
+    @Test
+    public void testParse3()
+    {
+        String serverHello = loadResource( "/samples/server_hello02.bin" );
+
+        assertEquals( 4145, serverHello.length() );
+        TlsRecord record = TlsRecord.parse( serverHello );
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x102C, record.getLength() ); //4140
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
+        assertEquals( HandshakeMessageType.Certificate, hand.getHandshakeMessageType() );
+        assertEquals( 0x001028, hand.getLength() ); //4136
+        assertEquals( 0x001028, hand.getData().length() );
+
+    }
+
+    @Test
+    public void testParse4()
+    {
+        String serverHello = loadResource( "/samples/server_hello03.bin" );
+
+        assertEquals( 9, serverHello.length() );
+        TlsRecord record = TlsRecord.parse( serverHello );
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x0004, record.getLength() ); //4
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
+        assertEquals( HandshakeMessageType.ServerHelloDone, hand.getHandshakeMessageType() );
+        assertEquals( 0, hand.getLength() ); //0
+        assertEquals( 0, hand.getData().length() );
+
+    }
+
     static private String loadResource( String path )
     {
         StringBuilder sBuf = new StringBuilder();

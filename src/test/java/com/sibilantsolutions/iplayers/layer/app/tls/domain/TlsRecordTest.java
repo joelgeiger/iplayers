@@ -27,7 +27,18 @@ public class TlsRecordTest
         assertEquals( HandshakeMessageType.ClientHello, hand.getHandshakeMessageType() );
         assertEquals( 0x0000AC, hand.getLength() ); //172
         assertEquals( 0x0000AC, hand.getData().length() );
-
+        ClientHello ch = ClientHello.parse( hand.getData() );
+        assertEquals( Version.TLS_1_2, ch.getVersion() );
+        assertEquals( 0x7DB02DD0, ch.getRandom().getDate() );
+        assertEquals( 28, ch.getRandom().getRandom().length() );
+        assertEquals( "" +
+                (char)0x32 + (char)0x58 + (char)0x07 + (char)0x4A +
+                (char)0xCA + (char)0x47 + (char)0x9F + (char)0xD5 +
+                (char)0x57 + (char)0xE9 + (char)0x0E + (char)0x25 +
+                (char)0xB9 + (char)0xAC + (char)0x2E + (char)0x99 +
+                (char)0x07 + (char)0x9A + (char)0x70 + (char)0xD2 +
+                (char)0x98 + (char)0x64 + (char)0x42 + (char)0x3F +
+                (char)0xA9 + (char)0x1C + (char)0x89 + (char)0xC8, ch.getRandom().getRandom() );
     }
 
     @Test

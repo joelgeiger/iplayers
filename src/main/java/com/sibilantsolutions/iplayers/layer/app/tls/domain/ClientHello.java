@@ -15,6 +15,7 @@ public class ClientHello
     private int compressionMethodsLength;
     private List<CompressionMethod> compressionMethods = new ArrayList<CompressionMethod>();
     private int extensionsLength;
+    private List<ExtensionI> extensions = new ArrayList<ExtensionI>();
 
     public List<CipherSuite> getCipherSuites()
     {
@@ -34,6 +35,11 @@ public class ClientHello
     public List<CompressionMethod> getCompressionMethods()
     {
         return compressionMethods;
+    }
+
+    public List<ExtensionI> getExtensions()
+    {
+        return extensions;
     }
 
     public int getExtensionsLength()
@@ -105,10 +111,33 @@ public class ClientHello
                 case server_name:
                     extension = ServerNameExtension.parse( extData );
                     break;
+                case renegotiation_info:
+                    extension = RenegotiationInfoExtension.parse( extData );
+                    break;
+                case elliptic_curves:
+                    extension = EllipticCurvesExtension.parse( extData );
+                    break;
+                case ec_point_formats:
+                    extension = EcPointFormatsExtension.parse( extData );
+                    break;
+                case sessionTicket_TLS:
+                    extension = SessionTicketTlsExtension.parse( extData );
+                    break;
+                case next_protocol_negotiation:
+                    extension = NextProtocolNegotiationExtension.parse( extData );
+                    break;
+                case status_request:
+                    extension = StatusRequestExtension.parse( extData );
+                    break;
+                case unknown01:
+                    extension = Unknown01Extension.parse( extData );
+                    break;
 
                 default:
                     throw new IllegalArgumentException( "Unexpected value=" + extensionType );
             }
+
+            ch.extensions.add( extension );
         }
 
         return ch;

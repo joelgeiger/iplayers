@@ -196,6 +196,21 @@ public class TlsRecordTest
         assertEquals( CompressionMethod.Null, ch.getCompressionMethods().get( 0 ) );
 
         assertEquals( 63, ch.getExtensionsLength() );   //0x003F
+
+        assertEquals( 7, ch.getExtensions().size() );
+
+        ServerNameExtension serverName = (ServerNameExtension)ch.getExtensions().get( 0 );
+        assertEquals( 0, serverName.getServerNameType() );
+        assertEquals( "www.amazon.com", serverName.getServerName() );
+
+        EllipticCurvesExtension ellipticCurves = (EllipticCurvesExtension)ch.getExtensions().get( 2 );
+        EllipticCurve[] expectedEllipticCurves = {
+                EllipticCurve.secp256r1, EllipticCurve.secp384r1, EllipticCurve.secp521r1 };
+        assertEquals( expectedEllipticCurves.length, ellipticCurves.getEllipticCurves().size() );
+        for ( int i = 0; i < expectedEllipticCurves.length; i++ )
+        {
+            assertEquals( expectedEllipticCurves[i], ellipticCurves.getEllipticCurves().get( i ) );
+        }
     }
 
     static private String loadResource( String path )

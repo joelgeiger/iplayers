@@ -12,6 +12,9 @@ public class ClientHello
     private String sessionId;
     private int cipherSuitesLength;
     private List<CipherSuite> cipherSuites = new ArrayList<CipherSuite>();
+    private int compressionMethodsLength;
+    private List<CompressionMethod> compressionMethods = new ArrayList<CompressionMethod>();
+    private int extensionsLength;
 
     public List<CipherSuite> getCipherSuites()
     {
@@ -21,6 +24,21 @@ public class ClientHello
     public int getCipherSuitesLength()
     {
         return cipherSuitesLength;
+    }
+
+    public int getCompressionMethodsLength()
+    {
+        return compressionMethodsLength;
+    }
+
+    public List<CompressionMethod> getCompressionMethods()
+    {
+        return compressionMethods;
+    }
+
+    public int getExtensionsLength()
+    {
+        return extensionsLength;
     }
 
     public Random getRandom()
@@ -63,7 +81,14 @@ public class ClientHello
             CipherSuite cs = CipherSuite.fromValue( csVal );
             ch.cipherSuites.add( cs );
         }
-
+        ch.compressionMethodsLength = data.charAt( i++ );
+        for ( int j = 0; j < ch.compressionMethodsLength; j++ )
+        {
+            int cmVal = data.charAt( i++ );
+            CompressionMethod cm = CompressionMethod.fromValue( cmVal );
+            ch.compressionMethods.add( cm );
+        }
+        ch.extensionsLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
 
         return ch;
     }

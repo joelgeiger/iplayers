@@ -78,6 +78,12 @@ public class TlsRecordTest
         {
             assertEquals( expectedCipherSuites[i], ch.getCipherSuites().get( i ) );
         }
+
+        assertEquals( 1, ch.getCompressionMethodsLength() );
+        assertEquals( 1, ch.getCompressionMethods().size() );
+        assertEquals( CompressionMethod.Null, ch.getCompressionMethods().get( 0 ) );
+
+        assertEquals( 85, ch.getExtensionsLength() );   //0x0055
     }
 
     @Test
@@ -184,6 +190,12 @@ public class TlsRecordTest
         {
             assertEquals( expectedCipherSuites[i], ch.getCipherSuites().get( i ) );
         }
+
+        assertEquals( 1, ch.getCompressionMethodsLength() );
+        assertEquals( 1, ch.getCompressionMethods().size() );
+        assertEquals( CompressionMethod.Null, ch.getCompressionMethods().get( 0 ) );
+
+        assertEquals( 63, ch.getExtensionsLength() );   //0x003F
     }
 
     static private String loadResource( String path )

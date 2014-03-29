@@ -90,6 +90,27 @@ public class ClientHello
         }
         ch.extensionsLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
 
+        for ( int end = i + ch.extensionsLength; i < end; )
+        {
+            int extensionTypeVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+            Extension extensionType = Extension.fromValue( extensionTypeVal );
+            int length = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+            String extData = data.substring( i, i + length );
+            i += length;
+
+            ExtensionI extension;
+
+            switch( extensionType )
+            {
+                case server_name:
+                    extension = ServerNameExtension.parse( extData );
+                    break;
+
+                default:
+                    throw new IllegalArgumentException( "Unexpected value=" + extensionType );
+            }
+        }
+
         return ch;
     }
 

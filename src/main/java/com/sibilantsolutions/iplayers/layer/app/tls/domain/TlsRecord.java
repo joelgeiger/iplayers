@@ -1,6 +1,7 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TlsRecord
@@ -43,6 +44,36 @@ public class TlsRecord
         return padding;
     }
 
+    public void setContentType( ContentType contentType )
+    {
+        this.contentType = contentType;
+    }
+
+    public void setVersion( Version version )
+    {
+        this.version = version;
+    }
+
+    public void setLength( int length )
+    {
+        this.length = length;
+    }
+
+    public void setProtocolMessages( List<ProtocolMessage> protocolMessages )
+    {
+        this.protocolMessages = protocolMessages;
+    }
+
+    public void setMac( Mac mac )
+    {
+        this.mac = mac;
+    }
+
+    public void setPadding( Padding padding )
+    {
+        this.padding = padding;
+    }
+
     static public TlsRecord parse( String record )
     {
         TlsRecord r = new TlsRecord();
@@ -73,6 +104,29 @@ public class TlsRecord
         }
 
         return r;
+    }
+
+    public String build()
+    {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append( contentType.getValue() );
+
+        StringBuilder pms = new StringBuilder();
+
+        for ( Iterator<ProtocolMessage> iterator = protocolMessages.iterator(); iterator.hasNext(); )
+        {
+            ProtocolMessage pm = iterator.next();
+            pms.append( pm.build() );
+        }
+
+        buf.append( pms.length() );
+
+        buf.append( pms );
+
+
+
+        return buf.toString();
     }
 
 }

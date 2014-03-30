@@ -35,9 +35,19 @@ public class TlsRecordTest
             CipherSuite.TLS_RSA_WITH_RC4_128_SHA,
             CipherSuite.TLS_RSA_WITH_RC4_128_MD5
     };
-
+/* TODO
     @Test
-    public void testParse1()
+    public void testBuild01()
+    {
+        TlsRecord record = new TlsRecord();
+
+        record.setContentType( ContentType.HANDSHAKE );
+
+        assertEquals( loadResource( "/samples/amazon https_04-clientHello.bin" ), record.build() );
+    }
+*/
+    @Test
+    public void testParse01()
     {
         String hello = loadResource( "/samples/client_hello.bin" );
 
@@ -102,7 +112,7 @@ public class TlsRecordTest
     }
 
     @Test
-    public void testParse2()
+    public void testParse02()
     {
         String serverHello = loadResource( "/samples/server_hello01.bin" );
 
@@ -121,7 +131,7 @@ public class TlsRecordTest
     }
 
     @Test
-    public void testParse3()
+    public void testParse03()
     {
         String serverHello = loadResource( "/samples/server_hello02.bin" );
 
@@ -140,7 +150,7 @@ public class TlsRecordTest
     }
 
     @Test
-    public void testParse4()
+    public void testParse04()
     {
         String serverHello = loadResource( "/samples/server_hello03.bin" );
 

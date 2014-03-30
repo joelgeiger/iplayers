@@ -7,14 +7,27 @@ public enum ContentType
     HANDSHAKE           ( Values.HANDSHAKE ),
     APPLICATION         ( Values.APPLICATION );
 
-    final private int value;
+    static private class Values
+    {
+        final static private char CHANGE_CIPHER_SPEC  = 0x14;   //20
+        final static private char ALERT               = 0x15;   //21
+        final static private char HANDSHAKE           = 0x16;   //22
+        final static private char APPLICATION         = 0x17;   //23
+    }
 
-    private ContentType( int value )
+    final private char value;
+
+    private ContentType( char value )
     {
         this.value = value;
     }
 
-    static public ContentType valueOf( int value )
+    public char getValue()
+    {
+        return value;
+    }
+
+    static public ContentType valueOf( char value )
     {
        switch( value )
        {
@@ -34,14 +47,6 @@ public enum ContentType
                throw new IllegalArgumentException( "Unexpected value=" + value );
        }
 
-    }
-
-    static private class Values
-    {
-        final static private int CHANGE_CIPHER_SPEC  = 0x14;   //20
-        final static private int ALERT               = 0x15;   //21
-        final static private int HANDSHAKE           = 0x16;   //22
-        final static private int APPLICATION         = 0x17;   //23
     }
 
 }

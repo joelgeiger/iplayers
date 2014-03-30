@@ -81,8 +81,8 @@ public class TlsRecord
         int i = 0;
 
         char contentType = record.charAt( i++ );
-        r.contentType = ContentType.valueOf( contentType );
-        r.version = Version.valueOf( record.charAt( i++ ), record.charAt( i++ ) );
+        r.contentType = ContentType.fromValue( contentType );
+        r.version = Version.fromValue( record.charAt( i++ ), record.charAt( i++ ) );
         r.length = record.charAt( i++ ) * 0x0100 + record.charAt( i++ );
 
         final int HEADER_LEN = 5;   //content type, version, length

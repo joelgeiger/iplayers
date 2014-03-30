@@ -6,11 +6,11 @@ public enum EllipticCurve
     secp384r1( Values.secp384r1 ),
     secp521r1( Values.secp521r1 );
 
-    static private class Values
+    static private interface Values
     {
-        final static private int secp256r1 = 0x0017;
-        final static private int secp384r1 = 0x0018;
-        final static private int secp521r1 = 0x0019;
+        final static public int secp256r1 = 0x0017;
+        final static public int secp384r1 = 0x0018;
+        final static public int secp521r1 = 0x0019;
     }
 
     private int value;

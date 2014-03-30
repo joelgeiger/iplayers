@@ -11,16 +11,16 @@ public enum Extension
     status_request( Values.status_request ),
     unknown01( Values.unknown01 );
 
-    final static private class Values
+    static private interface Values
     {
-        final static private int server_name = 0x0000;
-        final static private int renegotiation_info = 0xFF01;
-        final static private int elliptic_curves = 0x000A;
-        final static private int ec_point_formats = 0x000B;
-        final static private int sessionTicket_TLS = 0x0023;
-        final static private int next_protocol_negotiation = 0x3374;
-        final static private int status_request = 0x0005;
-        final static private int unknown01 = 0x000D;
+        final static public int server_name = 0x0000;
+        final static public int renegotiation_info = 0xFF01;
+        final static public int elliptic_curves = 0x000A;
+        final static public int ec_point_formats = 0x000B;
+        final static public int sessionTicket_TLS = 0x0023;
+        final static public int next_protocol_negotiation = 0x3374;
+        final static public int status_request = 0x0005;
+        final static public int unknown01 = 0x000D;
     }
 
     final private int value;

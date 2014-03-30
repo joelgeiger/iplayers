@@ -7,14 +7,14 @@ public enum Version
     TLS_1_1( Values.MAJOR, Values.TLS_1_1_MINOR ),    //TLS 1.1
     TLS_1_2( Values.MAJOR, Values.TLS_1_2_MINOR );    //TLS 1.2
 
-    static private class Values
+    static private interface Values
     {
-        final static private int MAJOR = 3;
+        final static public int MAJOR = 3;
 
-        final static private int SSL_3_0_MINOR = 0;
-        final static private int TLS_1_0_MINOR = 1;
-        final static private int TLS_1_1_MINOR = 2;
-        final static private int TLS_1_2_MINOR = 3;
+        final static public int SSL_3_0_MINOR = 0;
+        final static public int TLS_1_0_MINOR = 1;
+        final static public int TLS_1_1_MINOR = 2;
+        final static public int TLS_1_2_MINOR = 3;
     }
 
     final private int major;
@@ -26,7 +26,7 @@ public enum Version
         this.minor = minor;
     }
 
-    static public Version valueOf( int major, int minor )
+    static public Version fromValue( int major, int minor )
     {
         switch( major )
         {

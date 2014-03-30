@@ -7,12 +7,12 @@ public enum ContentType
     HANDSHAKE           ( Values.HANDSHAKE ),
     APPLICATION         ( Values.APPLICATION );
 
-    static private class Values
+    static private interface Values
     {
-        final static private char CHANGE_CIPHER_SPEC  = 0x14;   //20
-        final static private char ALERT               = 0x15;   //21
-        final static private char HANDSHAKE           = 0x16;   //22
-        final static private char APPLICATION         = 0x17;   //23
+        final static public char CHANGE_CIPHER_SPEC  = 0x14;   //20
+        final static public char ALERT               = 0x15;   //21
+        final static public char HANDSHAKE           = 0x16;   //22
+        final static public char APPLICATION         = 0x17;   //23
     }
 
     final private char value;
@@ -27,7 +27,7 @@ public enum ContentType
         return value;
     }
 
-    static public ContentType valueOf( char value )
+    static public ContentType fromValue( char value )
     {
        switch( value )
        {

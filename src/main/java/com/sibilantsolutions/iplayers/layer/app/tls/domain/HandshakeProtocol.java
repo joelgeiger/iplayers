@@ -27,7 +27,7 @@ public class HandshakeProtocol extends ProtocolMessage
 
         int i = 0;
 
-        h.handshakeMessageType = HandshakeMessageType.valueOf( str.charAt( i++ ) );
+        h.handshakeMessageType = HandshakeMessageType.fromValue( str.charAt( i++ ) );
         h.length = str.charAt( i++ ) * 0x010000 + str.charAt( i++ ) * 0x0100 + str.charAt( i++ );
         h.data = str.substring( i, i + h.length );
 

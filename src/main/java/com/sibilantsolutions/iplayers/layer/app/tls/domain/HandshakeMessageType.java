@@ -14,29 +14,34 @@ public enum HandshakeMessageType
     ClientKeyExchange( Values.ClientKeyExchange ),
     Finished( Values.Finished );
 
-    static private class Values
+    static private interface Values
     {
-        final static private int HelloRequest       = 0;    //0x00
-        final static private int ClientHello        = 1;    //0x01
-        final static private int ServerHello        = 2;    //0x02
-        final static private int NewSessionTicket   = 4;    //0x04
-        final static private int Certificate        = 11;   //0x0B
-        final static private int ServerKeyExchange  = 12;   //0x0C
-        final static private int CertificateRequest = 13;   //0x0D
-        final static private int ServerHelloDone    = 14;   //0x0E
-        final static private int CertificateVerify  = 15;   //0x0F
-        final static private int ClientKeyExchange  = 16;   //0x10
-        final static private int Finished           = 20;   //0x14
+        final static public char HelloRequest       = 0;    //0x00
+        final static public char ClientHello        = 1;    //0x01
+        final static public char ServerHello        = 2;    //0x02
+        final static public char NewSessionTicket   = 4;    //0x04
+        final static public char Certificate        = 11;   //0x0B
+        final static public char ServerKeyExchange  = 12;   //0x0C
+        final static public char CertificateRequest = 13;   //0x0D
+        final static public char ServerHelloDone    = 14;   //0x0E
+        final static public char CertificateVerify  = 15;   //0x0F
+        final static public char ClientKeyExchange  = 16;   //0x10
+        final static public char Finished           = 20;   //0x14
     }
 
-    private int value;
+    private char value;
 
-    private HandshakeMessageType( int value )
+    private HandshakeMessageType( char value )
     {
         this.value = value;
     }
 
-    static public HandshakeMessageType valueOf( int value )
+    public char getValue()
+    {
+        return value;
+    }
+
+    static public HandshakeMessageType fromValue( char value )
     {
         switch( value )
         {
@@ -77,4 +82,5 @@ public enum HandshakeMessageType
                 throw new IllegalArgumentException( "Unexpected value=" + value );
         }
     }
+
 }

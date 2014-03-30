@@ -73,7 +73,7 @@ public class ClientHello
 
         int i = 0;
 
-        ch.version = Version.valueOf( data.charAt( i++ ), data.charAt( i++ ) );
+        ch.version = Version.fromValue( data.charAt( i++ ), data.charAt( i++ ) );
         final int RANDOM_LENGTH = 32;
         ch.random = Random.parse( data.substring( i, i + RANDOM_LENGTH ) );
         i += RANDOM_LENGTH;

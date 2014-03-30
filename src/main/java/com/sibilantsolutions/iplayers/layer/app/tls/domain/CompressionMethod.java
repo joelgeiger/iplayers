@@ -4,9 +4,9 @@ public enum CompressionMethod
 {
     Null( Values.Null );
 
-    final static private class Values
+    static private interface Values
     {
-        final static private int Null = 0;
+        final static public int Null = 0;
     }
 
     final private int value;

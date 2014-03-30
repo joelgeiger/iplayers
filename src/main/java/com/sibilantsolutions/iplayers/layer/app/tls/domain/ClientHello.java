@@ -1,10 +1,14 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class ClientHello
+import com.sibilantsolutions.iptools.util.HexUtils;
+
+public class ClientHello implements HandshakeMessageI
 {
+    //final static private Logger log = LoggerFactory.getLogger( ClientHello.class );
 
     private Version version;
     private Random random;
@@ -90,7 +94,7 @@ public class ClientHello
         ch.compressionMethodsLength = data.charAt( i++ );
         for ( int j = 0; j < ch.compressionMethodsLength; j++ )
         {
-            int cmVal = data.charAt( i++ );
+            char cmVal = data.charAt( i++ );
             CompressionMethod cm = CompressionMethod.fromValue( cmVal );
             ch.compressionMethods.add( cm );
         }
@@ -106,6 +110,7 @@ public class ClientHello
 
             ExtensionI extension;
 
+                //TODO: Move this switch into a parse() method in Extension enum.
             switch( extensionType )
             {
                 case server_name:
@@ -141,6 +146,69 @@ public class ClientHello
         }
 
         return ch;
+    }
+
+    @Override
+    public String build()
+    {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append( version.getMajor() );
+        buf.append( version.getMinor() );
+        buf.append( HexUtils.encodeNum( random.getDate(), 4 ) );
+        buf.append( random.getRandom() );
+        buf.append( HexUtils.encodeNum( sessionId.length(), 1 ) );
+        buf.append( sessionId );
+
+        StringBuilder csBuf = new StringBuilder();
+        for ( Iterator<CipherSuite> iterator = cipherSuites.iterator(); iterator.hasNext(); )
+        {
+            CipherSuite cs = iterator.next();
+            csBuf.append( HexUtils.encodeNum( cs.getValue(), 2 ) );
+        }
+        buf.append( HexUtils.encodeNum( csBuf.length(), 2 ) );
+        buf.append( csBuf );
+
+        StringBuilder cmBuf = new StringBuilder();
+        for ( Iterator<CompressionMethod> iterator = compressionMethods.iterator(); iterator.hasNext(); )
+        {
+            CompressionMethod cm = iterator.next();
+            cmBuf.append( cm.getValue() );
+        }
+        buf.append( HexUtils.encodeNum( cmBuf.length(), 1 ) );
+        buf.append( cmBuf );
+
+        StringBuilder extBuf = new StringBuilder();
+        for ( Iterator<ExtensionI> iterator = extensions.iterator(); iterator.hasNext(); )
+        {
+            ExtensionI ext = iterator.next();
+
+                //TODO this needs to be the value from Extension enum.
+            extBuf.append( "" + (char)0xFF + (char)0xFF );
+
+            String extData = ext.build();
+            extBuf.append( HexUtils.encodeNum( extData.length(), 2 ) );
+            extBuf.append( extData );
+        }
+        buf.append( HexUtils.encodeNum( extBuf.length(), 2 ) );
+        buf.append( extBuf );
+
+        return buf.toString();
+    }
+
+    public void setVersion( Version version )
+    {
+        this.version = version;
+    }
+
+    public void setRandom( Random random )
+    {
+        this.random = random;
+    }
+
+    public void setSessionId( String sessionId )
+    {
+        this.sessionId = sessionId;
     }
 
 }

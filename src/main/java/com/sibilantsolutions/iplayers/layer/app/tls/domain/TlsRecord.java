@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sibilantsolutions.iptools.util.HexUtils;
+
 public class TlsRecord
 {
 
@@ -112,6 +114,9 @@ public class TlsRecord
 
         buf.append( contentType.getValue() );
 
+        buf.append( version.getMajor() );
+        buf.append( version.getMinor() );
+
         StringBuilder pms = new StringBuilder();
 
         for ( Iterator<ProtocolMessage> iterator = protocolMessages.iterator(); iterator.hasNext(); )
@@ -120,7 +125,7 @@ public class TlsRecord
             pms.append( pm.build() );
         }
 
-        buf.append( pms.length() );
+        buf.append( HexUtils.encodeNum( pms.length(), 2 ) );
 
         buf.append( pms );
 

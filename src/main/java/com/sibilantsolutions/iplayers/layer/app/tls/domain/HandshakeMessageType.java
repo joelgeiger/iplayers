@@ -83,4 +83,30 @@ public enum HandshakeMessageType
         }
     }
 
+    public HandshakeMessageI parse( String data )
+    {
+        //TODO: It is good that parse() is an instance method and not static.  But it would be
+        //nice if the parser class was set when each enum is constructed so that we don't
+        //need the switch here, but the parse() methods in the HMIs are static and we wouldn't
+        //be able to invoke them easily without reflection.
+
+        switch( this )
+        {
+            case ClientHello:
+                return com.sibilantsolutions.iplayers.layer.app.tls.domain.ClientHello.parse( data );
+
+            case ServerHello:
+                return com.sibilantsolutions.iplayers.layer.app.tls.domain.ServerHello.parse( data );
+
+            case Certificate:
+                return com.sibilantsolutions.iplayers.layer.app.tls.domain.Certificate.parse( data );
+
+            case ServerHelloDone:
+                return com.sibilantsolutions.iplayers.layer.app.tls.domain.ServerHelloDone.parse( data );
+
+            default:
+                throw new IllegalArgumentException( "Unexpected value=" + this );
+        }
+    }
+
 }

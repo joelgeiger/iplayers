@@ -2,6 +2,7 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 public class Random
 {
+
     private long date;      //4 bytes
     private String random;  //28 bytes
 
@@ -13,6 +14,16 @@ public class Random
     public String getRandom()
     {
         return random;
+    }
+
+    public void setDate( long date )
+    {
+        this.date = date;
+    }
+
+    public void setRandom( String random )
+    {
+        this.random = random;
     }
 
     static public Random parse( String str )

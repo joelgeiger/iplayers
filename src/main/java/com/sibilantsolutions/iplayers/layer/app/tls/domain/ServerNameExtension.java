@@ -1,5 +1,7 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import com.sibilantsolutions.iptools.util.HexUtils;
+
 public class ServerNameExtension implements ExtensionI
 {
     private int serverNameType; //TODO: This should be a enum, I think.
@@ -29,6 +31,31 @@ public class ServerNameExtension implements ExtensionI
         i += serverNameLength;
 
         return sne;
+    }
+
+    public void setServerNameType( int serverNameType )
+    {
+        this.serverNameType = serverNameType;
+    }
+
+    public void setServerName( String serverName )
+    {
+        this.serverName = serverName;
+    }
+
+    @Override
+    public String build()
+    {
+        StringBuilder buf = new StringBuilder();
+
+            //serverNameType + serverName length bytes + length of serverName
+        buf.append( HexUtils.encodeNum( 1 + 2 + serverName.length(), 2 ) );
+
+        buf.append( HexUtils.encodeNum( serverNameType, 1 ) );
+        buf.append( HexUtils.encodeNum( serverName.length(), 2 ) );
+        buf.append( serverName );
+
+        return buf.toString();
     }
 
 }

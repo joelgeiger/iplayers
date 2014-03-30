@@ -1,6 +1,6 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-public interface ExtensionI
+public interface HandshakeMessageI
 {
 
     public String build();

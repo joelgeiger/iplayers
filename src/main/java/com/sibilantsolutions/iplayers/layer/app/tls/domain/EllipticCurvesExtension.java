@@ -28,4 +28,11 @@ public class EllipticCurvesExtension implements ExtensionI
         return ext;
     }
 
+    @Override
+    public String build()
+    {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException( "OGTE TODO!" );
+    }
+
 }

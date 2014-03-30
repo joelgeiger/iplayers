@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
 public class TlsRecordTest
 {
-    final static private CipherSuite[] expectedCipherSuites = {
+    final static private List<CipherSuite> expectedCipherSuites = Arrays.asList(
             CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
             CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
             CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
@@ -34,7 +35,7 @@ public class TlsRecordTest
             CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
             CipherSuite.TLS_RSA_WITH_RC4_128_SHA,
             CipherSuite.TLS_RSA_WITH_RC4_128_MD5
-    };
+    );
 /* TODO
     @Test
     public void testBuild01()
@@ -42,6 +43,43 @@ public class TlsRecordTest
         TlsRecord record = new TlsRecord();
 
         record.setContentType( ContentType.HANDSHAKE );
+        record.setVersion( Version.TLS_1_0 );
+
+        HandshakeProtocol handshake = new HandshakeProtocol();
+        record.getProtocolMessages().add( handshake );
+
+        handshake.setHandshakeMessageType( HandshakeMessageType.ClientHello );
+
+        ClientHello clientHello = new ClientHello();
+        handshake.setData( clientHello );
+
+        clientHello.setVersion( Version.TLS_1_0 );
+        Random random = new Random();
+        clientHello.setRandom( random );
+        random.setDate( 0x149BB5DB );
+        random.setRandom( "" +
+                (char)0x41 + (char)0x9F + (char)0x12 + (char)0xCB +
+                (char)0xD6 + (char)0x97 + (char)0xDF + (char)0x23 +
+                (char)0x1F + (char)0x39 + (char)0x28 + (char)0x3A +
+                (char)0x69 + (char)0x74 + (char)0xD3 + (char)0xEA +
+                (char)0x7B + (char)0x93 + (char)0xC9 + (char)0xE5 +
+                (char)0xAE + (char)0x5D + (char)0x90 + (char)0x60 +
+                (char)0xC2 + (char)0x06 + (char)0xC6 + (char)0xCF );
+        clientHello.setSessionId( "" +
+                (char)0x05 + (char)0xb1 + (char)0x56 + (char)0x4b + (char)0x5a + (char)0xa3 +
+                (char)0x6a + (char)0x85 + (char)0x82 + (char)0xf4 + (char)0x2f + (char)0x28 +
+                (char)0xec + (char)0xbf + (char)0x91 + (char)0x27 + (char)0x2a + (char)0x3a +
+                (char)0xcd + (char)0xb7 + (char)0x5f + (char)0x76 + (char)0x0c + (char)0xb5 +
+                (char)0x31 + (char)0xc3 + (char)0x63 + (char)0xd5 + (char)0xdc + (char)0x61 +
+                (char)0xce + (char)0x76 );
+        clientHello.getCipherSuites().addAll( expectedCipherSuites );
+        clientHello.getCompressionMethods().add( CompressionMethod.Null );
+        ServerNameExtension serverName = new ServerNameExtension();
+        serverName.setServerNameType( 0 );
+        serverName.setServerName( "www.amazon.com" );
+        clientHello.getExtensions().add( serverName );
+
+        //System.out.println( HexDump.prettyDump( record.build() ) );
 
         assertEquals( loadResource( "/samples/amazon https_04-clientHello.bin" ), record.build() );
     }
@@ -61,8 +99,7 @@ public class TlsRecordTest
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.ClientHello, hand.getHandshakeMessageType() );
         assertEquals( 0x0000AC, hand.getLength() ); //172
-        assertEquals( 0x0000AC, hand.getData().length() );
-        ClientHello ch = ClientHello.parse( hand.getData() );
+        ClientHello ch = (ClientHello)hand.getData();
         assertEquals( Version.TLS_1_2, ch.getVersion() );
         assertEquals( 0x7DB02DD0, ch.getRandom().getDate() );
         assertEquals( 28, ch.getRandom().getRandom().length() );
@@ -82,11 +119,11 @@ public class TlsRecordTest
         assertEquals( 46, ch.getCipherSuitesLength() ); //0x2E
         assertEquals( 46 / 2, ch.getCipherSuites().size() );
 
-        assertEquals( expectedCipherSuites.length, ch.getCipherSuites().size() );
+        assertEquals( expectedCipherSuites.size(), ch.getCipherSuites().size() );
 
-        for ( int i = 0; i < expectedCipherSuites.length; i++ )
+        for ( int i = 0; i < expectedCipherSuites.size(); i++ )
         {
-            assertEquals( expectedCipherSuites[i], ch.getCipherSuites().get( i ) );
+            assertEquals( expectedCipherSuites.get( i ), ch.getCipherSuites().get( i ) );
         }
 
         assertEquals( 1, ch.getCompressionMethodsLength() );
@@ -126,7 +163,6 @@ public class TlsRecordTest
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.ServerHello, hand.getHandshakeMessageType() );
         assertEquals( 0x00004D, hand.getLength() ); //77
-        assertEquals( 0x00004D, hand.getData().length() );
 
     }
 
@@ -145,7 +181,6 @@ public class TlsRecordTest
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.Certificate, hand.getHandshakeMessageType() );
         assertEquals( 0x001028, hand.getLength() ); //4136
-        assertEquals( 0x001028, hand.getData().length() );
 
     }
 
@@ -164,7 +199,6 @@ public class TlsRecordTest
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.ServerHelloDone, hand.getHandshakeMessageType() );
         assertEquals( 0, hand.getLength() ); //0
-        assertEquals( 0, hand.getData().length() );
 
     }
 
@@ -183,8 +217,7 @@ public class TlsRecordTest
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.ClientHello, hand.getHandshakeMessageType() );
         assertEquals( 0x0000B6, hand.getLength() ); //182
-        assertEquals( 0x0000B6, hand.getData().length() );
-        ClientHello ch = ClientHello.parse( hand.getData() );
+        ClientHello ch = (ClientHello)hand.getData();
         assertEquals( Version.TLS_1_0, ch.getVersion() );
         assertEquals( 0x149BB5DB, ch.getRandom().getDate() );
         assertEquals( 28, ch.getRandom().getRandom().length() );
@@ -209,11 +242,11 @@ public class TlsRecordTest
         assertEquals( 46, ch.getCipherSuitesLength() ); //0x2E
         assertEquals( 46 / 2, ch.getCipherSuites().size() );
 
-        assertEquals( expectedCipherSuites.length, ch.getCipherSuites().size() );
+        assertEquals( expectedCipherSuites.size(), ch.getCipherSuites().size() );
 
-        for ( int i = 0; i < expectedCipherSuites.length; i++ )
+        for ( int i = 0; i < expectedCipherSuites.size(); i++ )
         {
-            assertEquals( expectedCipherSuites[i], ch.getCipherSuites().get( i ) );
+            assertEquals( expectedCipherSuites.get( i ), ch.getCipherSuites().get( i ) );
         }
 
         assertEquals( 1, ch.getCompressionMethodsLength() );

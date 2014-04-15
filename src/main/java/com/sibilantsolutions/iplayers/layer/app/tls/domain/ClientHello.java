@@ -183,8 +183,7 @@ public class ClientHello implements HandshakeMessageI
         {
             ExtensionI ext = iterator.next();
 
-                //TODO this needs to be the value from Extension enum.
-            extBuf.append( "" + (char)0xFF + (char)0xFF );
+            extBuf.append( HexUtils.encodeNum( ext.getExtensionType().getValue(), 2 ) );
 
             String extData = ext.build();
             extBuf.append( HexUtils.encodeNum( extData.length(), 2 ) );

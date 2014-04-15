@@ -36,7 +36,7 @@ public class TlsRecordTest
             CipherSuite.TLS_RSA_WITH_RC4_128_SHA,
             CipherSuite.TLS_RSA_WITH_RC4_128_MD5
     );
-/* TODO
+
     @Test
     public void testBuild01()
     {
@@ -79,11 +79,34 @@ public class TlsRecordTest
         serverName.setServerName( "www.amazon.com" );
         clientHello.getExtensions().add( serverName );
 
+        RenegotiationInfoExtension rie = new RenegotiationInfoExtension();
+        clientHello.getExtensions().add( rie );
+
+        EllipticCurvesExtension ece = new EllipticCurvesExtension();
+        clientHello.getExtensions().add( ece );
+        ece.getEllipticCurves().add( EllipticCurve.secp256r1 );
+        ece.getEllipticCurves().add( EllipticCurve.secp384r1 );
+        ece.getEllipticCurves().add( EllipticCurve.secp521r1 );
+
+        EcPointFormatsExtension ecpf = new EcPointFormatsExtension();
+        clientHello.getExtensions().add( ecpf );
+        ecpf.setData( "" + (char)0x00 );
+
+        SessionTicketTlsExtension stt = new SessionTicketTlsExtension();
+        clientHello.getExtensions().add( stt );
+
+        NextProtocolNegotiationExtension npn = new NextProtocolNegotiationExtension();
+        clientHello.getExtensions().add( npn );
+
+        StatusRequestExtension sr = new StatusRequestExtension();
+        clientHello.getExtensions().add( sr );
+        sr.setData( "" + (char)0x01 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 );
+
         //System.out.println( HexDump.prettyDump( record.build() ) );
 
         assertEquals( loadResource( "/samples/amazon https_04-clientHello.bin" ), record.build() );
     }
-*/
+
     @Test
     public void testParse01()
     {
@@ -269,6 +292,10 @@ public class TlsRecordTest
         {
             assertEquals( expectedEllipticCurves[i], ellipticCurves.getEllipticCurves().get( i ) );
         }
+
+        EcPointFormatsExtension epf = (EcPointFormatsExtension)ch.getExtensions().get( 3 );
+        assertEquals( 1, epf.getData().length() );
+        assertEquals( "" + (char)0x00, epf.getData() );
     }
 
     static private String loadResource( String path )

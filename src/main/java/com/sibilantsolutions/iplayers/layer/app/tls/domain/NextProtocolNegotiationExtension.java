@@ -3,6 +3,18 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 public class NextProtocolNegotiationExtension implements ExtensionI
 {
 
+    @Override
+    public String build()
+    {
+        return "";
+    }
+
+    @Override
+    public Extension getExtensionType()
+    {
+        return Extension.next_protocol_negotiation;
+    }
+
     public static NextProtocolNegotiationExtension parse( String data )
     {
         NextProtocolNegotiationExtension ext = new NextProtocolNegotiationExtension();
@@ -10,13 +22,6 @@ public class NextProtocolNegotiationExtension implements ExtensionI
         //TODO: Finish parsing; add getters.
 
         return ext;
-    }
-
-    @Override
-    public String build()
-    {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException( "OGTE TODO!" );
     }
 
 }

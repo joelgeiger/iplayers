@@ -10,6 +10,12 @@ public class Unknown01Extension implements ExtensionI
         return data;
     }
 
+    @Override
+    public Extension getExtensionType()
+    {
+        return Extension.unknown01;
+    }
+
     public static Unknown01Extension parse( String data )
     {
         Unknown01Extension ext = new Unknown01Extension();

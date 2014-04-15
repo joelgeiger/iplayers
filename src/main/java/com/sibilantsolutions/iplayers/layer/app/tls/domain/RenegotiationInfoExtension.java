@@ -1,7 +1,28 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import com.sibilantsolutions.iptools.util.HexUtils;
+
 public class RenegotiationInfoExtension implements ExtensionI
 {
+
+    private String data = "";
+
+    @Override
+    public String build()
+    {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append( HexUtils.encodeNum( data.length(), 1 ) );
+        buf.append( data );
+
+        return buf.toString();
+    }
+
+    @Override
+    public Extension getExtensionType()
+    {
+        return Extension.renegotiation_info;
+    }
 
     public static RenegotiationInfoExtension parse( String data )
     {
@@ -15,13 +36,6 @@ public class RenegotiationInfoExtension implements ExtensionI
         i += length;
 
         return ext;
-    }
-
-    @Override
-    public String build()
-    {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException( "OGTE TODO!" );
     }
 
 }

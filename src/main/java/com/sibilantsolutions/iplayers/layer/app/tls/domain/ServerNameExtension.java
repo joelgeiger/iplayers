@@ -7,6 +7,12 @@ public class ServerNameExtension implements ExtensionI
     private int serverNameType; //TODO: This should be a enum, I think.
     private String serverName;
 
+    @Override
+    public Extension getExtensionType()
+    {
+        return Extension.server_name;
+    }
+
     public int getServerNameType()
     {
         return serverNameType;

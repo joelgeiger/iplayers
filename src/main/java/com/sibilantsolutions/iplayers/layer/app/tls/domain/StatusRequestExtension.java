@@ -1,13 +1,31 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+
 public class StatusRequestExtension implements ExtensionI
 {
 
     private String data;
 
+    @Override
+    public String build()
+    {
+        return data;
+    }
+
     public String getData()
     {
         return data;
+    }
+
+    public void setData( String data )
+    {
+        this.data = data;
+    }
+
+    @Override
+    public Extension getExtensionType()
+    {
+        return Extension.status_request;
     }
 
     public static StatusRequestExtension parse( String data )
@@ -17,13 +35,6 @@ public class StatusRequestExtension implements ExtensionI
         ext.data = data;
 
         return ext;
-    }
-
-    @Override
-    public String build()
-    {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException( "OGTE TODO!" );
     }
 
 }

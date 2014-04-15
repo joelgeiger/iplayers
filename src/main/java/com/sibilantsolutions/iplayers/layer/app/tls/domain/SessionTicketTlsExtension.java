@@ -3,6 +3,18 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 public class SessionTicketTlsExtension implements ExtensionI
 {
 
+    @Override
+    public String build()
+    {
+        return "";
+    }
+
+    @Override
+    public Extension getExtensionType()
+    {
+        return Extension.sessionTicket_TLS;
+    }
+
     public static SessionTicketTlsExtension parse( String data )
     {
         SessionTicketTlsExtension ext = new SessionTicketTlsExtension();
@@ -10,13 +22,6 @@ public class SessionTicketTlsExtension implements ExtensionI
             //TODO: Finish parsing; add getters.
 
         return ext;
-    }
-
-    @Override
-    public String build()
-    {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException( "OGTE TODO!" );
     }
 
 }

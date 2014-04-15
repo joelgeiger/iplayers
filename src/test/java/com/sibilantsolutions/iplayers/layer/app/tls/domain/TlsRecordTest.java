@@ -298,6 +298,57 @@ public class TlsRecordTest
         assertEquals( "" + (char)0x00, epf.getData() );
     }
 
+    @Test
+    public void testParse06()
+    {
+        String bin = loadResource( "/samples/amazon https_09-serverHello.bin" );
+
+        assertEquals( 86, bin.length() );
+
+        TlsRecord record = TlsRecord.parse( bin );
+
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x0051, record.getLength() ); //81
+
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
+        assertEquals( HandshakeMessageType.ServerHello, hand.getHandshakeMessageType() );
+        assertEquals( 0x00004D, hand.getLength() ); //77
+
+        ServerHello sh = (ServerHello)hand.getData();
+        assertEquals( Version.TLS_1_0, sh.getVersion() );
+        assertEquals( 0x532F5B79, sh.getRandom().getDate() );
+        assertEquals( 28, sh.getRandom().getRandom().length() );
+        assertEquals( "" +
+                (char)0x3C + (char)0x17 + (char)0xA6 + (char)0x49 +
+                (char)0xD6 + (char)0xC3 + (char)0x69 + (char)0x0F +
+                (char)0x1F + (char)0xAD + (char)0x17 + (char)0xD3 +
+                (char)0x62 + (char)0x09 + (char)0x53 + (char)0x2D +
+                (char)0x9D + (char)0x0F + (char)0xC6 + (char)0xD1 +
+                (char)0x54 + (char)0xC9 + (char)0x5B + (char)0xB5 +
+                (char)0xBF + (char)0xE5 + (char)0xB5 + (char)0x8F, sh.getRandom().getRandom() );
+
+        assertEquals( 32, sh.getSessionId().length() );
+        assertEquals( "" +
+                (char)0xFA + (char)0x20 + (char)0x04 + (char)0xF6 + (char)0xA6 + (char)0x12 +
+                (char)0xEE + (char)0xEF + (char)0x64 + (char)0x04 + (char)0xBE + (char)0x35 +
+                (char)0x43 + (char)0xDE + (char)0x6D + (char)0xC8 + (char)0x8A + (char)0xF5 +
+                (char)0x76 + (char)0x75 + (char)0xE5 + (char)0x1A + (char)0x20 + (char)0x0C +
+                (char)0x5F + (char)0x6D + (char)0x91 + (char)0x2E + (char)0xE9 + (char)0x94 +
+                (char)0x3B + (char)0xEF, sh.getSessionId() );
+
+        assertEquals( CipherSuite.TLS_RSA_WITH_RC4_128_SHA, sh.getCipherSuite() );
+        assertEquals( CompressionMethod.Null, sh.getCompressionMethod() );
+
+        assertEquals( 1, sh.getExtensions().size() );
+
+        RenegotiationInfoExtension ri = (RenegotiationInfoExtension)sh.getExtensions().get( 0 );
+        assertEquals( 0, ri.getData().length() );
+
+    }
+
     static private String loadResource( String path )
     {
         StringBuilder sBuf = new StringBuilder();

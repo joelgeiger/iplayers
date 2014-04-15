@@ -60,4 +60,43 @@ public enum Extension
                 throw new IllegalArgumentException( "Unexpected value=" + value );
         }
     }
+
+    public ExtensionI parse(  String data )
+    {
+        ExtensionI extension;
+
+        switch( this )
+        {
+            case server_name:
+                extension = ServerNameExtension.parse( data );
+                break;
+            case renegotiation_info:
+                extension = RenegotiationInfoExtension.parse( data );
+                break;
+            case elliptic_curves:
+                extension = EllipticCurvesExtension.parse( data );
+                break;
+            case ec_point_formats:
+                extension = EcPointFormatsExtension.parse( data );
+                break;
+            case sessionTicket_TLS:
+                extension = SessionTicketTlsExtension.parse( data );
+                break;
+            case next_protocol_negotiation:
+                extension = NextProtocolNegotiationExtension.parse( data );
+                break;
+            case status_request:
+                extension = StatusRequestExtension.parse( data );
+                break;
+            case unknown01:
+                extension = Unknown01Extension.parse( data );
+                break;
+
+            default:
+                throw new IllegalArgumentException( "Unexpected value=" + this );
+        }
+
+        return extension;
+    }
+
 }

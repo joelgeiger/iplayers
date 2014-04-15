@@ -18,6 +18,16 @@ public class RenegotiationInfoExtension implements ExtensionI
         return buf.toString();
     }
 
+    public String getData()
+    {
+        return data;
+    }
+
+    public void setData( String data )
+    {
+        this.data = data;
+    }
+
     @Override
     public Extension getExtensionType()
     {
@@ -32,7 +42,7 @@ public class RenegotiationInfoExtension implements ExtensionI
 
             //TODO: Finish parsing; add getters.
         int length = data.charAt( i++ );
-        String renegotiationInfoExtension = data.substring( i, i + length );
+        ext.data = data.substring( i, i + length );
         i += length;
 
         return ext;

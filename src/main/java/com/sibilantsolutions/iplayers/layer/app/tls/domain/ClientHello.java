@@ -108,39 +108,7 @@ public class ClientHello implements HandshakeMessageI
             String extData = data.substring( i, i + length );
             i += length;
 
-            ExtensionI extension;
-
-                //TODO: Move this switch into a parse() method in Extension enum.
-            switch( extensionType )
-            {
-                case server_name:
-                    extension = ServerNameExtension.parse( extData );
-                    break;
-                case renegotiation_info:
-                    extension = RenegotiationInfoExtension.parse( extData );
-                    break;
-                case elliptic_curves:
-                    extension = EllipticCurvesExtension.parse( extData );
-                    break;
-                case ec_point_formats:
-                    extension = EcPointFormatsExtension.parse( extData );
-                    break;
-                case sessionTicket_TLS:
-                    extension = SessionTicketTlsExtension.parse( extData );
-                    break;
-                case next_protocol_negotiation:
-                    extension = NextProtocolNegotiationExtension.parse( extData );
-                    break;
-                case status_request:
-                    extension = StatusRequestExtension.parse( extData );
-                    break;
-                case unknown01:
-                    extension = Unknown01Extension.parse( extData );
-                    break;
-
-                default:
-                    throw new IllegalArgumentException( "Unexpected value=" + extensionType );
-            }
+            ExtensionI extension = extensionType.parse( extData );
 
             ch.extensions.add( extension );
         }

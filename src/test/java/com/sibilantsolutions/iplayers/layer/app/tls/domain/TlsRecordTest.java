@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.cert.CertPath;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -192,19 +194,29 @@ public class TlsRecordTest
     @Test
     public void testParse03()
     {
-        String serverHello = loadResource( "/samples/server_hello02.bin" );
+        String bin = loadResource( "/samples/amazon https_13-certificate.bin" );
 
-        assertEquals( 4145, serverHello.length() );
-        TlsRecord record = TlsRecord.parse( serverHello );
+        assertEquals( 4145, bin.length() );
+
+        TlsRecord record = TlsRecord.parse( bin );
+
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
         assertEquals( 0x102C, record.getLength() ); //4140
+
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.Certificate, hand.getHandshakeMessageType() );
         assertEquals( 0x001028, hand.getLength() ); //4136
 
+        Certificate c = (Certificate)hand.getData();
+
+        CertPath certPath = c.getCertPath();
+        assertEquals( 3, certPath.getCertificates().size() );
+        X509Certificate cert = (X509Certificate)certPath.getCertificates().get( 0 );
+        assertEquals( "CN=www.amazon.com, O=Amazon.com Inc., L=Seattle, ST=Washington, C=US",
+                cert.getSubjectDN().getName() );
     }
 
     @Test

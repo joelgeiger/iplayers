@@ -1,5 +1,7 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import com.sibilantsolutions.iptools.util.HexUtils;
+
 public enum HandshakeMessageType
 {
     HelloRequest( Values.HelloRequest ),
@@ -79,7 +81,7 @@ public enum HandshakeMessageType
                 return Finished;
 
             default:
-                throw new IllegalArgumentException( "Unexpected value=" + value );
+                throw new IllegalArgumentException( "Unexpected value=0x" + HexUtils.numToHex( value ) );
         }
     }
 

@@ -1,6 +1,7 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -235,6 +236,7 @@ public class TlsRecordTest
         assertEquals( HandshakeMessageType.ServerHelloDone, hand.getHandshakeMessageType() );
         assertEquals( 0x000000, hand.getLength() ); //0
         ServerHelloDone shd = (ServerHelloDone)hand.getData();
+        assertNotNull( shd );
     }
 
     @Test
@@ -403,7 +405,23 @@ public class TlsRecordTest
         ChangeCipherSpec ccs = (ChangeCipherSpec)protocolMessages.get( 0 );
         assertEquals( "" + (char)0x01, ccs.getChangeCipherSpecMessageType() );
     }
+/* TODO
+    @Test
+    public void testParse09()
+    {
+        String bin = loadResource( "/samples/amazon https_15-encryptedHandshakeMessage.bin" );
 
+        assertEquals( 41, bin.length() );
+
+        TlsRecord record = TlsRecord.parse( bin );
+
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x0024, record.getLength() ); //36
+
+        //TODO
+    }
+*/
     static private String loadResource( String path )
     {
         StringBuilder sBuf = new StringBuilder();

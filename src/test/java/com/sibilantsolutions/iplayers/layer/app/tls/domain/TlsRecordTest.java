@@ -222,10 +222,10 @@ public class TlsRecordTest
     @Test
     public void testParse04()
     {
-        String serverHello = loadResource( "/samples/server_hello03.bin" );
+        String bin = loadResource( "/samples/amazon https_13-serverHelloDone.bin" );
 
-        assertEquals( 9, serverHello.length() );
-        TlsRecord record = TlsRecord.parse( serverHello );
+        assertEquals( 9, bin.length() );
+        TlsRecord record = TlsRecord.parse( bin );
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
         assertEquals( 0x0004, record.getLength() ); //4
@@ -233,8 +233,8 @@ public class TlsRecordTest
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
         assertEquals( HandshakeMessageType.ServerHelloDone, hand.getHandshakeMessageType() );
-        assertEquals( 0, hand.getLength() ); //0
-
+        assertEquals( 0x000000, hand.getLength() ); //0
+        ServerHelloDone shd = (ServerHelloDone)hand.getData();
     }
 
     @Test

@@ -385,6 +385,25 @@ public class TlsRecordTest
         assertEquals( 0x0100, cke.getEncryptedPreMaster().length() );   //256
     }
 
+    @Test
+    public void testParse08()
+    {
+        String bin = loadResource( "/samples/amazon https_15-changeCipherSpec.bin" );
+
+        assertEquals( 6, bin.length() );
+
+        TlsRecord record = TlsRecord.parse( bin );
+
+        assertEquals( ContentType.CHANGE_CIPHER_SPEC, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x0001, record.getLength() ); //1
+
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        ChangeCipherSpec ccs = (ChangeCipherSpec)protocolMessages.get( 0 );
+        assertEquals( "" + (char)0x01, ccs.getChangeCipherSpecMessageType() );
+    }
+
     static private String loadResource( String path )
     {
         StringBuilder sBuf = new StringBuilder();

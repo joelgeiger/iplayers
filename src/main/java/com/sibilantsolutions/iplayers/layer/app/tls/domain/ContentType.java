@@ -49,4 +49,19 @@ public enum ContentType
 
     }
 
+    public ProtocolMessage parse( String data )
+    {
+        switch( this )
+        {
+            case HANDSHAKE:
+                return HandshakeProtocol.parse( data );
+
+            case CHANGE_CIPHER_SPEC:
+                return ChangeCipherSpec.parse( data );
+
+            default:
+                throw new IllegalArgumentException( "Unexpected contentType=" + this );
+        }
+    }
+
 }

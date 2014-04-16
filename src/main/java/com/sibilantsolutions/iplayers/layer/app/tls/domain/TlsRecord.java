@@ -91,18 +91,11 @@ public class TlsRecord
 
         while ( i < r.length + HEADER_LEN )
         {
-            switch( r.contentType )
-            {
-                case HANDSHAKE:
-                    String str = record.substring( i, i + r.length );
-                    i += r.length;
-                    ProtocolMessage msg = HandshakeProtocol.parse( str );
-                    r.protocolMessages.add( msg );
-                    break;
+            String str = record.substring( i, i + r.length );
+            i += r.length;
 
-                default:
-                    throw new IllegalArgumentException( "Unexpected contentType=" + contentType );
-            }
+            ProtocolMessage msg = r.contentType.parse( str );
+            r.protocolMessages.add( msg );
         }
 
         return r;

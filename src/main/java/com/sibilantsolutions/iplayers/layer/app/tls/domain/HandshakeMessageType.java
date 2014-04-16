@@ -104,6 +104,9 @@ public enum HandshakeMessageType
             case ServerHelloDone:
                 return com.sibilantsolutions.iplayers.layer.app.tls.domain.ServerHelloDone.parse( data );
 
+            case ClientKeyExchange:
+                return com.sibilantsolutions.iplayers.layer.app.tls.domain.ClientKeyExchange.parse( data );
+
             default:
                 throw new IllegalArgumentException( "Unexpected value=" + this );
         }

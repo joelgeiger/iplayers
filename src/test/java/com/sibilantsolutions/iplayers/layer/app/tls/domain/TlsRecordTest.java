@@ -361,6 +361,30 @@ public class TlsRecordTest
 
     }
 
+    @Test
+    public void testParse07()
+    {
+        String bin = loadResource( "/samples/amazon https_15-clientKeyExchange.bin" );
+
+        assertEquals( 267, bin.length() );
+
+        TlsRecord record = TlsRecord.parse( bin );
+
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_0, record.getVersion() );
+        assertEquals( 0x0106, record.getLength() ); //262
+
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
+        assertEquals( HandshakeMessageType.ClientKeyExchange, hand.getHandshakeMessageType() );
+        assertEquals( 0x000102, hand.getLength() ); //258
+
+        ClientKeyExchange cke = (ClientKeyExchange)hand.getData();
+
+        assertEquals( 0x0100, cke.getEncryptedPreMaster().length() );   //256
+    }
+
     static private String loadResource( String path )
     {
         StringBuilder sBuf = new StringBuilder();

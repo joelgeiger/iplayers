@@ -1,17 +1,25 @@
 package com.sibilantsolutions.iplayers.layer.app.irc;
 
-import com.sibilantsolutions.iptools.event.ReceiveEvt;
-import com.sibilantsolutions.iptools.event.SocketListenerI;
 import com.sibilantsolutions.iplayers.layer.app.irc.command.Command;
 import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandContext;
 import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandFactory;
 import com.sibilantsolutions.iplayers.layer.app.irc.domain.IrcLine;
+import com.sibilantsolutions.iptools.event.LostConnectionEvt;
+import com.sibilantsolutions.iptools.event.ReceiveEvt;
+import com.sibilantsolutions.iptools.event.SocketListenerI;
 
 public class IrcDataProc implements SocketListenerI
 {
     //final static private Logger log = LoggerFactory.getLogger( IrcDataProc.class );
 
     private CommandFactory commandFactory;
+
+    @Override
+    public void onLostConnection( LostConnectionEvt evt )
+    {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException( "OGTE TODO!" );
+    }
 
     @Override
     public void onReceive( ReceiveEvt evt )
@@ -71,4 +79,5 @@ public class IrcDataProc implements SocketListenerI
     {
         this.commandFactory = commandFactory;
     }
+
 }

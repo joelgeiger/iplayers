@@ -11,10 +11,11 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sibilantsolutions.iptools.event.ReceiveEvt;
-import com.sibilantsolutions.iptools.event.SocketListenerI;
 import com.sibilantsolutions.iplayers.layer.app.http.domain.HttpHeaders;
 import com.sibilantsolutions.iplayers.layer.app.http.domain.RequestLine;
+import com.sibilantsolutions.iptools.event.LostConnectionEvt;
+import com.sibilantsolutions.iptools.event.ReceiveEvt;
+import com.sibilantsolutions.iptools.event.SocketListenerI;
 import com.sibilantsolutions.iptools.util.Socker;
 
 
@@ -24,7 +25,7 @@ import com.sibilantsolutions.iptools.util.Socker;
 public class HttpReceiver implements SocketListenerI
 {
     final static private Logger log = LoggerFactory.getLogger( HttpReceiver.class );
-    
+
 //    private enum RecvState
 //    {
 //        NEED_METHOD,
@@ -32,9 +33,16 @@ public class HttpReceiver implements SocketListenerI
 //        NEED_HTTP_VERSION,
 //        NEED_HOST
 //    }
-//    
+//
 //    private RecvState recvState = RecvState.NEED_METHOD;
-    
+
+    @Override
+    public void onLostConnection( LostConnectionEvt evt )
+    {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException( "OGTE TODO!" );
+    }
+
     @Override
     public void onReceive( ReceiveEvt evt )
     {
@@ -53,11 +61,11 @@ public class HttpReceiver implements SocketListenerI
             throw new UnsupportedOperationException( "OGTE TODO!", e );
         }
         RequestLine requestLine = RequestLine.parse( s );
-        
+
 //        byte[] data = evt.getData();
 //        int offset = evt.getOffset();
 //        int length = evt.getLength();
-//        
+//
 //        switch ( recvState )
 //        {
 //            case NEED_METHOD:
@@ -67,7 +75,7 @@ public class HttpReceiver implements SocketListenerI
 //            default:
 //                throw new IllegalStateException( "Unexpected state=" + recvState );
 //        }
-        
+
         switch( requestLine.getMethod() )
         {
             case GET:
@@ -121,13 +129,13 @@ public class HttpReceiver implements SocketListenerI
 //    private HttpMethod parseMethod( byte[] data, int offset, int length )
 //    {
 //        StringBuilder buf = new StringBuilder( 16 );
-//        
+//
 //        boolean isDone = false;
-//        
+//
 //        for ( int i = offset; ! isDone && i < offset + length; i++ )
 //        {
 //            char c = (char)( data[i] & 0xFF );
-//            
+//
 //            boolean isWhitespace = Character.isWhitespace( c );
 //
 //                //Skip leading whitespace.
@@ -136,17 +144,17 @@ public class HttpReceiver implements SocketListenerI
 //                if ( isWhitespace )
 //                    continue;
 //            }
-//            
+//
 //            if ( isWhitespace )
 //                isDone = true;
 //            else
 //                buf.append( c );
 //        }
-//        
+//
 //        String proposedMethod = buf.toString();
 //        log.debug( "Proposed method=\"{}\".", proposedMethod );
 //        HttpMethod method = HttpMethod.valueOf( proposedMethod );
-//        
+//
 //        return method;
 //    }
 

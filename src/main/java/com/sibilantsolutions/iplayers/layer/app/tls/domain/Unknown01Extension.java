@@ -3,9 +3,9 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 public class Unknown01Extension implements ExtensionI
 {
 
-    private String data;
+    private byte[] data;
 
-    public String getData()
+    public byte[] getData()
     {
         return data;
     }
@@ -16,17 +16,19 @@ public class Unknown01Extension implements ExtensionI
         return Extension.unknown01;
     }
 
-    public static Unknown01Extension parse( String data )
+    public static Unknown01Extension parse( byte[] data, int offset, int length )
     {
         Unknown01Extension ext = new Unknown01Extension();
 
-        ext.data = data;
+        byte[] d = new byte[length];
+        System.arraycopy( data, offset, d, 0, length );
+        ext.data = d;
 
         return ext;
     }
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException( "OGTE TODO!" );

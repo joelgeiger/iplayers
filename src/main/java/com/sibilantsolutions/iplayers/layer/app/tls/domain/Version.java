@@ -9,24 +9,24 @@ public enum Version
 
     static private interface Values
     {
-        final static public char MAJOR = 3;
+        final static public byte MAJOR = 3;
 
-        final static public char SSL_3_0_MINOR = 0;
-        final static public char TLS_1_0_MINOR = 1;
-        final static public char TLS_1_1_MINOR = 2;
-        final static public char TLS_1_2_MINOR = 3;
+        final static public byte SSL_3_0_MINOR = 0;
+        final static public byte TLS_1_0_MINOR = 1;
+        final static public byte TLS_1_1_MINOR = 2;
+        final static public byte TLS_1_2_MINOR = 3;
     }
 
-    final private char major;
-    final private char minor;
+    final private byte major;
+    final private byte minor;
 
-    private Version( char major, char minor )
+    private Version( byte major, byte minor )
     {
         this.major = major;
         this.minor = minor;
     }
 
-    static public Version fromValue( char major, char minor )
+    static public Version fromValue( byte major, byte minor )
     {
         switch( major )
         {
@@ -56,12 +56,12 @@ public enum Version
         }
     }
 
-    public char getMajor()
+    public byte getMajor()
     {
         return major;
     }
 
-    public char getMinor()
+    public byte getMinor()
     {
         return minor;
     }

@@ -1,29 +1,29 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-import com.sibilantsolutions.iptools.util.HexUtils;
+import java.nio.ByteBuffer;
 
 public class EcPointFormatsExtension implements ExtensionI
 {
 
-    private String data;
+    private byte[] data;
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
+        ByteBuffer bb = ByteBuffer.allocate( 1 + data.length );
 
-        buf.append( HexUtils.encodeNum( data.length(), 1 ) );
-        buf.append(  data );
+        bb.put( (byte)data.length );
+        bb.put( data );
 
-        return buf.toString();
+        return bb.array();
     }
 
-    public String getData()
+    public byte[] getData()
     {
         return data;
     }
 
-    public void setData( String data )
+    public void setData( byte[] data )
     {
         this.data = data;
     }
@@ -34,14 +34,16 @@ public class EcPointFormatsExtension implements ExtensionI
         return Extension.ec_point_formats;
     }
 
-    public static EcPointFormatsExtension parse( String data )
+    public static EcPointFormatsExtension parse( byte[] data, int offset, int length )
     {
         EcPointFormatsExtension ext = new EcPointFormatsExtension();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
-        int ecLength = data.charAt( i++ );
-        ext.data = data.substring( i, i + ecLength );
+        int ecLength = bb.get();
+        byte[] d = new byte[ecLength];
+        bb.get( d );
+        ext.data = d;
 
         return ext;
     }

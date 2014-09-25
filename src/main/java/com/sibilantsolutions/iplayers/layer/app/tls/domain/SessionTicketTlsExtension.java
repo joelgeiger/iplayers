@@ -4,9 +4,9 @@ public class SessionTicketTlsExtension implements ExtensionI
 {
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        return "";
+        return new byte[0];
     }
 
     @Override
@@ -15,7 +15,7 @@ public class SessionTicketTlsExtension implements ExtensionI
         return Extension.sessionTicket_TLS;
     }
 
-    public static SessionTicketTlsExtension parse( String data )
+    public static SessionTicketTlsExtension parse( byte[] data, int offset, int length )
     {
         SessionTicketTlsExtension ext = new SessionTicketTlsExtension();
 

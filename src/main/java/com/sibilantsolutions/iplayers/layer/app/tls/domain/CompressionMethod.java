@@ -6,22 +6,22 @@ public enum CompressionMethod
 
     static private interface Values
     {
-        final static public char Null = 0;
+        final static public byte Null = 0;
     }
 
-    final private char value;
+    final private byte value;
 
-    private CompressionMethod( char value )
+    private CompressionMethod( byte value )
     {
         this.value = value;
     }
 
-    public char getValue()
+    public byte getValue()
     {
         return value;
     }
 
-    static public CompressionMethod fromValue( char value )
+    static public CompressionMethod fromValue( byte value )
     {
         switch( value )
         {

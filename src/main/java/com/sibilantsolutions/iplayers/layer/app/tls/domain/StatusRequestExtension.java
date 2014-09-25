@@ -1,23 +1,22 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-
 public class StatusRequestExtension implements ExtensionI
 {
 
-    private String data;
+    private byte[] data;
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
         return data;
     }
 
-    public String getData()
+    public byte[] getData()
     {
         return data;
     }
 
-    public void setData( String data )
+    public void setData( byte[] data )
     {
         this.data = data;
     }
@@ -28,11 +27,13 @@ public class StatusRequestExtension implements ExtensionI
         return Extension.status_request;
     }
 
-    public static StatusRequestExtension parse( String data )
+    public static StatusRequestExtension parse( byte[] data, int offset, int length )
     {
         StatusRequestExtension ext = new StatusRequestExtension();
 
-        ext.data = data;
+        byte[] d = new byte[length];
+        System.arraycopy( data, offset, d, 0, length );
+        ext.data = d;
 
         return ext;
     }

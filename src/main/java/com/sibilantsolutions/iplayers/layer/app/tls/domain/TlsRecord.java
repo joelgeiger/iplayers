@@ -1,10 +1,11 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.sibilantsolutions.iptools.util.HexUtils;
 
 public class TlsRecord
 {
@@ -61,55 +62,65 @@ public class TlsRecord
         this.padding = padding;
     }
 
-    static public TlsRecord parse( String record )
+    static public TlsRecord parse( byte[] data, int offset, int length )
     {
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
+
         TlsRecord r = new TlsRecord();
 
-        int i = 0;
-
-        char contentType = record.charAt( i++ );
+        byte contentType = bb.get();
         r.contentType = ContentType.fromValue( contentType );
-        r.version = Version.fromValue( record.charAt( i++ ), record.charAt( i++ ) );
-        int length = record.charAt( i++ ) * 0x0100 + record.charAt( i++ );
+        r.version = Version.fromValue( bb.get(), bb.get() );
+        int len = bb.getChar();
 
         final int HEADER_LEN = 5;   //content type, version, length
 
-        while ( i < length + HEADER_LEN )
+        while ( bb.position() < len + HEADER_LEN )
         {
-            String str = record.substring( i, i + length );
-            i += length;
+            byte[] pmData = new byte[len];
+            bb.get( pmData );
 
-            ProtocolMessage msg = r.contentType.parse( str );
+            ProtocolMessage msg = r.contentType.parse( pmData, 0, pmData.length );
             r.protocolMessages.add( msg );
         }
 
         return r;
     }
 
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
 
-        buf.append( contentType.getValue() );
-
-        buf.append( version.getMajor() );
-        buf.append( version.getMinor() );
-
-        StringBuilder pms = new StringBuilder();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         for ( Iterator<ProtocolMessage> iterator = protocolMessages.iterator(); iterator.hasNext(); )
         {
             ProtocolMessage pm = iterator.next();
-            pms.append( pm.build() );
+            byte[] pmData = pm.toDatastream();
+            try
+            {
+                baos.write( pmData );
+            }
+            catch ( IOException e )
+            {
+                // TODO Auto-generated catch block
+                throw new UnsupportedOperationException( "MY TODO", e );
+            }
         }
 
-        buf.append( HexUtils.encodeNum( pms.length(), 2 ) );
+        byte[] pms = baos.toByteArray();
 
-        buf.append( pms );
+        ByteBuffer bb = ByteBuffer.allocate( 5 + pms.length );
 
+        bb.put( contentType.getValue() );
 
+        bb.put( version.getMajor() );
+        bb.put( version.getMinor() );
 
-        return buf.toString();
+        bb.putChar( (char)pms.length );
+
+        bb.put( pms );
+
+        return bb.array();
     }
 
 }

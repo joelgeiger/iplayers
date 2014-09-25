@@ -1,5 +1,6 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +9,13 @@ public class ServerHello implements HandshakeMessageI
 
     private Version version;
     private Random random;
-    private String sessionId;
+    private byte[] sessionId;
     private CipherSuite cipherSuite;
     private CompressionMethod compressionMethod;
     private final List<ExtensionI> extensions = new ArrayList<ExtensionI>();
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException( "OGTE TODO!" );
@@ -40,12 +41,12 @@ public class ServerHello implements HandshakeMessageI
         this.random = random;
     }
 
-    public String getSessionId()
+    public byte[] getSessionId()
     {
         return sessionId;
     }
 
-    public void setSessionId( String sessionId )
+    public void setSessionId( byte[] sessionId )
     {
         this.sessionId = sessionId;
     }
@@ -75,39 +76,41 @@ public class ServerHello implements HandshakeMessageI
         return extensions;
     }
 
-    public static ServerHello parse( String data )
+    public static ServerHello parse( byte[] data, int offset, int length )
     {
         ServerHello sh = new ServerHello();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
-        sh.version = Version.fromValue( data.charAt( i++ ), data.charAt( i++ ) );
+        sh.version = Version.fromValue( bb.get(), bb.get() );
         final int RANDOM_LENGTH = 32;
-        sh.random = Random.parse( data.substring( i, i + RANDOM_LENGTH ) );
-        i += RANDOM_LENGTH;
-        int sessionIdLength = data.charAt( i++ );
-        sh.sessionId = data.substring( i, i + sessionIdLength );
-        i += sessionIdLength;
+        byte[] rDat = new byte[RANDOM_LENGTH];
+        bb.get( rDat );
+        sh.random = Random.parse( rDat, 0, rDat.length );
+        int sessionIdLength = bb.get();
+        byte[] sessionId = new byte[sessionIdLength];
+        bb.get( sessionId );
+        sh.sessionId = sessionId;
 
-        int csVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+        int csVal = bb.getChar();
         sh.cipherSuite = CipherSuite.fromValue( csVal );
 
-        char cmVal = data.charAt( i++ );
+        byte cmVal = bb.get();
         sh.compressionMethod = CompressionMethod.fromValue( cmVal );
 
-        if ( i < data.length() )
+        if ( bb.hasRemaining() )
         {
-            int extensionsLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+            int extensionsLength = bb.getChar();
 
-            for ( int end = i + extensionsLength; i < end; )
+            for ( int end = bb.position() + extensionsLength; bb.position() < end; )
             {
-                int extensionTypeVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+                int extensionTypeVal = bb.getChar();
                 Extension extensionType = Extension.fromValue( extensionTypeVal );
-                int length = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-                String extData = data.substring( i, i + length );
-                i += length;
+                int extLen = bb.getChar();
+                byte[] extData = new byte[extLen];
+                bb.get( extData );
 
-                ExtensionI extension = extensionType.parse( extData );
+                ExtensionI extension = extensionType.parse( extData, 0, extData.length );
 
                 sh.extensions.add( extension );
             }

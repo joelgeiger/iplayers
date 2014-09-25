@@ -61,35 +61,35 @@ public enum Extension
         }
     }
 
-    public ExtensionI parse(  String data )
+    public ExtensionI parse( byte[] data, int offset, int length )
     {
         ExtensionI extension;
 
         switch( this )
         {
             case server_name:
-                extension = ServerNameExtension.parse( data );
+                extension = ServerNameExtension.parse( data, offset, length );
                 break;
             case renegotiation_info:
-                extension = RenegotiationInfoExtension.parse( data );
+                extension = RenegotiationInfoExtension.parse( data, offset, length );
                 break;
             case elliptic_curves:
-                extension = EllipticCurvesExtension.parse( data );
+                extension = EllipticCurvesExtension.parse( data, offset, length );
                 break;
             case ec_point_formats:
-                extension = EcPointFormatsExtension.parse( data );
+                extension = EcPointFormatsExtension.parse( data, offset, length );
                 break;
             case sessionTicket_TLS:
-                extension = SessionTicketTlsExtension.parse( data );
+                extension = SessionTicketTlsExtension.parse( data, offset, length );
                 break;
             case next_protocol_negotiation:
-                extension = NextProtocolNegotiationExtension.parse( data );
+                extension = NextProtocolNegotiationExtension.parse( data, offset, length );
                 break;
             case status_request:
-                extension = StatusRequestExtension.parse( data );
+                extension = StatusRequestExtension.parse( data, offset, length );
                 break;
             case unknown01:
-                extension = Unknown01Extension.parse( data );
+                extension = Unknown01Extension.parse( data, offset, length );
                 break;
 
             default:

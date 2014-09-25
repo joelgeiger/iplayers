@@ -1,13 +1,14 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sibilantsolutions.iptools.util.HexDump;
+import com.sibilantsolutions.iptools.util.Convert;
 
 public class Certificate implements HandshakeMessageI
 {
@@ -15,7 +16,7 @@ public class Certificate implements HandshakeMessageI
     private CertPath certPath;
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException( "OGTE TODO!" );
@@ -31,13 +32,13 @@ public class Certificate implements HandshakeMessageI
         this.certPath = certPath;
     }
 
-    public static Certificate parse( String data )
+    public static Certificate parse( byte[] data, int offset, int length )
     {
         Certificate c = new Certificate();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
-        int certsLen = data.charAt( i++ ) * 0x010000 + data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+        int certsLen = (int)Convert.toNum( bb, 3 );
 
         CertificateFactory cf;
 
@@ -53,13 +54,13 @@ public class Certificate implements HandshakeMessageI
 
         List<java.security.cert.Certificate> certs = new ArrayList<java.security.cert.Certificate>();
 
-        for ( int end = i + certsLen; i < end; )
+        for ( int end = bb.position() + certsLen; bb.position() < end; )
         {
-            int certLen = data.charAt( i++ ) * 0x010000 + data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-            String certBin = data.substring( i, i + certLen );
-            i += certLen;
+            int certLen = (int)Convert.toNum( bb, 3 );
+            byte[] certBin = new byte[certLen];
+            bb.get( certBin );
 
-            ByteArrayInputStream ins = new ByteArrayInputStream( certBin.getBytes( HexDump.cs ) );
+            ByteArrayInputStream ins = new ByteArrayInputStream( certBin );
 
             java.security.cert.Certificate cert;
 

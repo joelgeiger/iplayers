@@ -1,17 +1,19 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import java.nio.ByteBuffer;
+
 public class Random
 {
 
     private long date;      //4 bytes
-    private String random;  //28 bytes
+    private byte[] random;  //28 bytes
 
     public long getDate()
     {
         return date;
     }
 
-    public String getRandom()
+    public byte[] getRandom()
     {
         return random;
     }
@@ -21,37 +23,24 @@ public class Random
         this.date = date;
     }
 
-    public void setRandom( String random )
+    public void setRandom( byte[] random )
     {
         this.random = random;
     }
 
-    static public Random parse( String str )
+    static public Random parse( byte[] data, int offset, int length )
     {
         Random r = new Random();
 
-        String dateStr = str.substring( 0, 4 );
-        long dateNum = strBytesToLong( dateStr, dateStr.length() );
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
+
+        long dateNum = bb.getInt();
         r.date = dateNum;
-        String random = str.substring( 4 );
-        r.random = random;
+        byte[] rByte = new byte[28];
+        bb.get( rByte );
+        r.random = rByte;
 
         return r;
     }
 
-    static public long strBytesToLong( String str, int length )
-    {
-        long num = 0;
-
-        for( int i = 0; i < length; i++ )
-        {
-            num = num << 8;
-
-            char ch = str.charAt( i );
-
-            num |= ch;
-        }
-
-        return num;
-    }
 }

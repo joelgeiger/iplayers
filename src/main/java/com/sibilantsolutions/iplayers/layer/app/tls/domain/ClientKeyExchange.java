@@ -1,43 +1,45 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-import com.sibilantsolutions.iptools.util.HexUtils;
+import java.nio.ByteBuffer;
 
 public class ClientKeyExchange implements HandshakeMessageI
 {
 
-    private String encryptedPreMaster;
+    private byte[] encryptedPreMaster;
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
+        ByteBuffer bb = ByteBuffer.allocate( 2 + encryptedPreMaster.length );
 
-        buf.append( HexUtils.encodeNum( encryptedPreMaster.length(), 2 ) );
-        buf.append( encryptedPreMaster );
+        bb.putChar( (char)encryptedPreMaster.length );
+        bb.put( encryptedPreMaster );
 
-        return buf.toString();
+        return bb.array();
     }
 
-    public String getEncryptedPreMaster()
+    public byte[] getEncryptedPreMaster()
     {
         return encryptedPreMaster;
     }
 
-    public void setEncryptedPreMaster( String encryptedPreMaster )
+    public void setEncryptedPreMaster( byte[] encryptedPreMaster )
     {
         this.encryptedPreMaster = encryptedPreMaster;
     }
 
-    public static ClientKeyExchange parse( String data )
+    public static ClientKeyExchange parse( byte[] data, int offset, int length )
     {
         ClientKeyExchange cke = new ClientKeyExchange();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
-        int len = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+        int len = bb.getChar();
 
-        cke.encryptedPreMaster = data.substring( i, i + len );
-        i += len;
+        byte[] epm = new byte[len];
+        bb.get( epm );
+
+        cke.encryptedPreMaster = epm;
 
         return cke;
     }

@@ -1,10 +1,11 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.sibilantsolutions.iptools.util.HexUtils;
 
 public class ClientHello implements HandshakeMessageI
 {
@@ -12,28 +13,18 @@ public class ClientHello implements HandshakeMessageI
 
     private Version version;
     private Random random;
-    private int sessionIdLength;
-    private String sessionId;
-    private int cipherSuitesLength;
-    private List<CipherSuite> cipherSuites = new ArrayList<CipherSuite>();
-    private int compressionMethodsLength;
-    private List<CompressionMethod> compressionMethods = new ArrayList<CompressionMethod>();
-    private int extensionsLength;
-    private List<ExtensionI> extensions = new ArrayList<ExtensionI>();
+    //private int sessionIdLength;
+    private byte[] sessionId;
+    //private int cipherSuitesLength;
+    private final List<CipherSuite> cipherSuites = new ArrayList<CipherSuite>();
+    //private int compressionMethodsLength;
+    private final List<CompressionMethod> compressionMethods = new ArrayList<CompressionMethod>();
+    //private int extensionsLength;
+    private final List<ExtensionI> extensions = new ArrayList<ExtensionI>();
 
     public List<CipherSuite> getCipherSuites()
     {
         return cipherSuites;
-    }
-
-    public int getCipherSuitesLength()
-    {
-        return cipherSuitesLength;
-    }
-
-    public int getCompressionMethodsLength()
-    {
-        return compressionMethodsLength;
     }
 
     public List<CompressionMethod> getCompressionMethods()
@@ -46,11 +37,6 @@ public class ClientHello implements HandshakeMessageI
         return extensions;
     }
 
-    public int getExtensionsLength()
-    {
-        return extensionsLength;
-    }
-
     public Random getRandom()
     {
         return random;
@@ -61,54 +47,51 @@ public class ClientHello implements HandshakeMessageI
         return version;
     }
 
-    public int getSessionIdLength()
-    {
-        return sessionIdLength;
-    }
-
-    public String getSessionId()
+    public byte[] getSessionId()
     {
         return sessionId;
     }
 
-    public static ClientHello parse( String data )
+    public static ClientHello parse( byte[] data, int offset, int length )
     {
         ClientHello ch = new ClientHello();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
-        ch.version = Version.fromValue( data.charAt( i++ ), data.charAt( i++ ) );
+        ch.version = Version.fromValue( bb.get(), bb.get() );
         final int RANDOM_LENGTH = 32;
-        ch.random = Random.parse( data.substring( i, i + RANDOM_LENGTH ) );
-        i += RANDOM_LENGTH;
-        ch.sessionIdLength = data.charAt( i++ );
-        ch.sessionId = data.substring( i, i + ch.sessionIdLength );
-        i += ch.sessionIdLength;
-        ch.cipherSuitesLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-        for ( int j = 0; j < ch.cipherSuitesLength; j += 2 )
+        byte[] randomDat = new byte[RANDOM_LENGTH];
+        bb.get( randomDat );
+        ch.random = Random.parse( randomDat, 0, randomDat.length );
+        int sessionIdLength = bb.get();
+        byte[] sessDat = new byte[sessionIdLength];
+        bb.get( sessDat );
+        ch.sessionId = sessDat;
+        int cipherSuitesLength = bb.getChar();
+        for ( int j = 0; j < cipherSuitesLength; j += 2 )
         {
-            int csVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+            int csVal = bb.getChar();
             CipherSuite cs = CipherSuite.fromValue( csVal );
             ch.cipherSuites.add( cs );
         }
-        ch.compressionMethodsLength = data.charAt( i++ );
-        for ( int j = 0; j < ch.compressionMethodsLength; j++ )
+        int compressionMethodsLength = bb.get();
+        for ( int j = 0; j < compressionMethodsLength; j++ )
         {
-            char cmVal = data.charAt( i++ );
+            byte cmVal = bb.get();
             CompressionMethod cm = CompressionMethod.fromValue( cmVal );
             ch.compressionMethods.add( cm );
         }
-        ch.extensionsLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+        int extensionsLength = bb.getChar();
 
-        for ( int end = i + ch.extensionsLength; i < end; )
+        for ( int end = bb.position() + extensionsLength; bb.position() < end; )
         {
-            int extensionTypeVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+            int extensionTypeVal = bb.getChar();
             Extension extensionType = Extension.fromValue( extensionTypeVal );
-            int length = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-            String extData = data.substring( i, i + length );
-            i += length;
+            int len = bb.getChar();
+            byte[] extData = new byte[len];
+            bb.get( extData );
 
-            ExtensionI extension = extensionType.parse( extData );
+            ExtensionI extension = extensionType.parse( extData, 0, extData.length );
 
             ch.extensions.add( extension );
         }
@@ -117,50 +100,67 @@ public class ClientHello implements HandshakeMessageI
     }
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append( version.getMajor() );
-        buf.append( version.getMinor() );
-        buf.append( HexUtils.encodeNum( random.getDate(), 4 ) );
-        buf.append( random.getRandom() );
-        buf.append( HexUtils.encodeNum( sessionId.length(), 1 ) );
-        buf.append( sessionId );
-
-        StringBuilder csBuf = new StringBuilder();
-        for ( Iterator<CipherSuite> iterator = cipherSuites.iterator(); iterator.hasNext(); )
-        {
-            CipherSuite cs = iterator.next();
-            csBuf.append( HexUtils.encodeNum( cs.getValue(), 2 ) );
-        }
-        buf.append( HexUtils.encodeNum( csBuf.length(), 2 ) );
-        buf.append( csBuf );
-
-        StringBuilder cmBuf = new StringBuilder();
-        for ( Iterator<CompressionMethod> iterator = compressionMethods.iterator(); iterator.hasNext(); )
-        {
-            CompressionMethod cm = iterator.next();
-            cmBuf.append( cm.getValue() );
-        }
-        buf.append( HexUtils.encodeNum( cmBuf.length(), 1 ) );
-        buf.append( cmBuf );
-
-        StringBuilder extBuf = new StringBuilder();
+        ByteArrayOutputStream extBAOS = new ByteArrayOutputStream();
         for ( Iterator<ExtensionI> iterator = extensions.iterator(); iterator.hasNext(); )
         {
             ExtensionI ext = iterator.next();
 
-            extBuf.append( HexUtils.encodeNum( ext.getExtensionType().getValue(), 2 ) );
+            byte[] extData = ext.toDatastream();
+            ByteBuffer eBuf = ByteBuffer.allocate( 2 + 2 + extData.length );
+            eBuf.putChar( (char)ext.getExtensionType().getValue() );
+            eBuf.putChar( (char)extData.length );
+            eBuf.put( extData );
 
-            String extData = ext.build();
-            extBuf.append( HexUtils.encodeNum( extData.length(), 2 ) );
-            extBuf.append( extData );
+            try
+            {
+                extBAOS.write( eBuf.array() );
+            }
+            catch ( IOException e )
+            {
+                // TODO Auto-generated catch block
+                throw new UnsupportedOperationException( "MY TODO", e );
+            }
         }
-        buf.append( HexUtils.encodeNum( extBuf.length(), 2 ) );
-        buf.append( extBuf );
 
-        return buf.toString();
+        byte[] extsData = extBAOS.toByteArray();
+
+        ByteBuffer bb = ByteBuffer.allocate(
+                2 +
+                4 + random.getRandom().length +
+                1 + sessionId.length +
+                2 + cipherSuites.size() * 2 +
+                1 + compressionMethods.size() +
+                2 + extsData.length );
+
+        bb.put( version.getMajor() );
+        bb.put( version.getMinor() );
+
+        bb.putInt( (int)random.getDate() );
+        bb.put( random.getRandom() );
+
+        bb.put( (byte)sessionId.length );
+        bb.put( sessionId );
+
+        bb.putChar( (char)( cipherSuites.size() * 2 ) );
+        for ( Iterator<CipherSuite> iterator = cipherSuites.iterator(); iterator.hasNext(); )
+        {
+            CipherSuite cs = iterator.next();
+            bb.putChar( (char)cs.getValue() );
+        }
+
+        bb.put( (byte)compressionMethods.size() );
+        for ( Iterator<CompressionMethod> iterator = compressionMethods.iterator(); iterator.hasNext(); )
+        {
+            CompressionMethod cm = iterator.next();
+            bb.put( cm.getValue() );
+        }
+
+        bb.putChar( (char)extsData.length );
+        bb.put( extsData );
+
+        return bb.array();
     }
 
     public void setVersion( Version version )
@@ -173,7 +173,7 @@ public class ClientHello implements HandshakeMessageI
         this.random = random;
     }
 
-    public void setSessionId( String sessionId )
+    public void setSessionId( byte[] sessionId )
     {
         this.sessionId = sessionId;
     }

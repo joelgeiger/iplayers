@@ -1,28 +1,28 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sibilantsolutions.iptools.util.HexUtils;
-
 public class EllipticCurvesExtension implements ExtensionI
 {
-    private List<EllipticCurve> ellipticCurves = new ArrayList<EllipticCurve>();
+    private final List<EllipticCurve> ellipticCurves = new ArrayList<EllipticCurve>();
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
+        ByteBuffer bb = ByteBuffer.allocate( 2 + ellipticCurves.size() * 2 );
 
-        buf.append( HexUtils.encodeNum( ellipticCurves.size() * 2, 2 ) );
+        bb.putChar( (char)( ellipticCurves.size() * 2 ) );
+
         for ( Iterator<EllipticCurve> iterator = ellipticCurves.iterator(); iterator.hasNext(); )
         {
             EllipticCurve ec = iterator.next();
-            buf.append( HexUtils.encodeNum( ec.getValue(), 2 ) );
+            bb.putChar( (char)ec.getValue() );
         }
 
-        return buf.toString();
+        return bb.array();
     }
 
     public List<EllipticCurve> getEllipticCurves()
@@ -36,16 +36,16 @@ public class EllipticCurvesExtension implements ExtensionI
         return Extension.elliptic_curves;
     }
 
-    public static EllipticCurvesExtension parse( String data )
+    public static EllipticCurvesExtension parse( byte[] data, int offset, int length )
     {
         EllipticCurvesExtension ext = new EllipticCurvesExtension();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
-        int ecLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+        int ecLength = bb.getChar();
         for ( int j = 0; j < ecLength; j += 2 )
         {
-            EllipticCurve ec = EllipticCurve.fromValue( data.charAt( i++ ) * 0x0100 + data.charAt( i++ ) );
+            EllipticCurve ec = EllipticCurve.fromValue( bb.getChar() );
             ext.ellipticCurves.add( ec );
         }
 

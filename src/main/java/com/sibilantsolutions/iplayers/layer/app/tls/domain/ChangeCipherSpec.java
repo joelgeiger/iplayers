@@ -3,29 +3,31 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 public class ChangeCipherSpec extends ProtocolMessage
 {
 
-    private String changeCipherSpecMessageType;
+    private byte[] changeCipherSpecMessageType;
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
         return changeCipherSpecMessageType;
     }
 
-    public String getChangeCipherSpecMessageType()
+    public byte[] getChangeCipherSpecMessageType()
     {
         return changeCipherSpecMessageType;
     }
 
-    public void setChangeCipherSpecMessageType( String changeCipherSpecMessageType )
+    public void setChangeCipherSpecMessageType( byte[] changeCipherSpecMessageType )
     {
         this.changeCipherSpecMessageType = changeCipherSpecMessageType;
     }
 
-    public static ChangeCipherSpec parse( String data )
+    public static ChangeCipherSpec parse( byte[] data, int offset, int length )
     {
         ChangeCipherSpec ccs = new ChangeCipherSpec();
 
-        ccs.changeCipherSpecMessageType = data;
+        byte[] d = new byte[length];
+        System.arraycopy( data, offset, d, 0, length );
+        ccs.changeCipherSpecMessageType = d;
 
         return ccs;
     }

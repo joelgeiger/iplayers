@@ -4,9 +4,9 @@ public class NextProtocolNegotiationExtension implements ExtensionI
 {
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        return "";
+        return new byte[0];
     }
 
     @Override
@@ -15,7 +15,7 @@ public class NextProtocolNegotiationExtension implements ExtensionI
         return Extension.next_protocol_negotiation;
     }
 
-    public static NextProtocolNegotiationExtension parse( String data )
+    public static NextProtocolNegotiationExtension parse( byte[] data, int offset, int length )
     {
         NextProtocolNegotiationExtension ext = new NextProtocolNegotiationExtension();
 

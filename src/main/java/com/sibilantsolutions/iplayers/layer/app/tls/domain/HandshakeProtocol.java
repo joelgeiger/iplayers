@@ -1,5 +1,9 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
+import java.nio.ByteBuffer;
+
+import com.sibilantsolutions.iptools.util.Convert;
+import com.sibilantsolutions.iptools.util.HexDump;
 import com.sibilantsolutions.iptools.util.HexUtils;
 
 public class HandshakeProtocol extends ProtocolMessage
@@ -28,33 +32,38 @@ public class HandshakeProtocol extends ProtocolMessage
         this.data = data;
     }
 
-    public static HandshakeProtocol parse( String str )
+    public static HandshakeProtocol parse( byte[] data, int offset, int l )
     {
         HandshakeProtocol h = new HandshakeProtocol();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, l );
 
-        h.handshakeMessageType = HandshakeMessageType.fromValue( str.charAt( i++ ) );
-        int length = str.charAt( i++ ) * 0x010000 + str.charAt( i++ ) * 0x0100 + str.charAt( i++ );
+        h.handshakeMessageType = HandshakeMessageType.fromValue( bb.get() );
+        int length = (int)Convert.toNum( bb, 3 );
 
-        String hmiData = str.substring( i, i + length );
+        //String hmiData = str.substring( i, i + length );
+        byte[] hmiData = new byte[length];
+        bb.get( hmiData );
 
-        h.data = h.handshakeMessageType.parse( hmiData );
+        h.data = h.handshakeMessageType.parse( hmiData, 0, hmiData.length );
 
         return h;
     }
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
+        byte[] hmiData = data.toDatastream();
 
-        buf.append( handshakeMessageType.getValue() );
-        String hmiData = data.build();
-        buf.append( HexUtils.encodeNum( hmiData.length(), 3 ) );
-        buf.append( hmiData );
+        ByteBuffer bb = ByteBuffer.allocate( 4 + hmiData.length );
 
-        return buf.toString();
+        bb.put( handshakeMessageType.getValue() );
+        String encodeNum = HexUtils.encodeNum( hmiData.length, 3 );
+        byte[] lengthBytes = encodeNum.getBytes( HexDump.cs );
+        bb.put( lengthBytes );
+        bb.put( hmiData );
+
+        return bb.array();
     }
 
 }

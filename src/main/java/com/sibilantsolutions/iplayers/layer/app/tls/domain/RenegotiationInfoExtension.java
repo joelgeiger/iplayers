@@ -1,29 +1,29 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-import com.sibilantsolutions.iptools.util.HexUtils;
+import java.nio.ByteBuffer;
 
 public class RenegotiationInfoExtension implements ExtensionI
 {
 
-    private String data = "";
+    private byte[] data = new byte[0];
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
+        ByteBuffer bb = ByteBuffer.allocate( 1 + data.length );
 
-        buf.append( HexUtils.encodeNum( data.length(), 1 ) );
-        buf.append( data );
+        bb.put( (byte)data.length );
+        bb.put( data );
 
-        return buf.toString();
+        return bb.array();
     }
 
-    public String getData()
+    public byte[] getData()
     {
         return data;
     }
 
-    public void setData( String data )
+    public void setData( byte[] data )
     {
         this.data = data;
     }
@@ -34,16 +34,17 @@ public class RenegotiationInfoExtension implements ExtensionI
         return Extension.renegotiation_info;
     }
 
-    public static RenegotiationInfoExtension parse( String data )
+    public static RenegotiationInfoExtension parse( byte[] data, int offset, int length )
     {
         RenegotiationInfoExtension ext = new RenegotiationInfoExtension();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
             //TODO: Finish parsing; add getters.
-        int length = data.charAt( i++ );
-        ext.data = data.substring( i, i + length );
-        i += length;
+        int l = bb.get();
+        byte[] d = new byte[l];
+        bb.get( d );
+        ext.data = d;
 
         return ext;
     }

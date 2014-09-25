@@ -1,6 +1,8 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-import com.sibilantsolutions.iptools.util.HexUtils;
+import java.nio.ByteBuffer;
+
+import com.sibilantsolutions.iptools.util.HexDump;
 
 public class ServerNameExtension implements ExtensionI
 {
@@ -23,18 +25,21 @@ public class ServerNameExtension implements ExtensionI
         return serverName;
     }
 
-    public static ServerNameExtension parse( String data )
+    public static ServerNameExtension parse( byte[] data, int offset, int length )
     {
         ServerNameExtension sne = new ServerNameExtension();
 
-        int i = 0;
+        ByteBuffer bb = ByteBuffer.wrap( data, offset, length );
 
             //TODO: This extension appears to be meant to be a list; our parsing is incomplete.
-        int listLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-        sne.serverNameType = data.charAt( i++ );
-        int serverNameLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-        sne.serverName = data.substring( i, i + serverNameLength );
-        i += serverNameLength;
+        //int listLength = bb.getChar();
+        bb.getChar();   //Skip this byte for now.
+
+        sne.serverNameType = bb.get();
+        int serverNameLength = bb.getChar();
+        byte[] snld = new byte[serverNameLength];
+        bb.get( snld );
+        sne.serverName = new String( snld, HexDump.cs );
 
         return sne;
     }
@@ -50,18 +55,20 @@ public class ServerNameExtension implements ExtensionI
     }
 
     @Override
-    public String build()
+    public byte[] toDatastream()
     {
-        StringBuilder buf = new StringBuilder();
+        byte[] serverNameBytes = serverName.getBytes( HexDump.cs );
 
             //serverNameType + serverName length bytes + length of serverName
-        buf.append( HexUtils.encodeNum( 1 + 2 + serverName.length(), 2 ) );
+        int len = 2 + 1 + 2 + serverNameBytes.length;
+        ByteBuffer bb = ByteBuffer.allocate( len );
 
-        buf.append( HexUtils.encodeNum( serverNameType, 1 ) );
-        buf.append( HexUtils.encodeNum( serverName.length(), 2 ) );
-        buf.append( serverName );
+        bb.putChar( (char)( len - 2 ) );
+        bb.put( (byte)serverNameType );
+        bb.putChar( (char)serverNameBytes.length );
+        bb.put( serverNameBytes );
 
-        return buf.toString();
+        return bb.array();
     }
 
 }

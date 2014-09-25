@@ -11,7 +11,7 @@ public class ServerHello implements HandshakeMessageI
     private String sessionId;
     private CipherSuite cipherSuite;
     private CompressionMethod compressionMethod;
-    private List<ExtensionI> extensions = new ArrayList<ExtensionI>();
+    private final List<ExtensionI> extensions = new ArrayList<ExtensionI>();
 
     @Override
     public String build()
@@ -95,19 +95,22 @@ public class ServerHello implements HandshakeMessageI
         char cmVal = data.charAt( i++ );
         sh.compressionMethod = CompressionMethod.fromValue( cmVal );
 
-        int extensionsLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-
-        for ( int end = i + extensionsLength; i < end; )
+        if ( i < data.length() )
         {
-            int extensionTypeVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-            Extension extensionType = Extension.fromValue( extensionTypeVal );
-            int length = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
-            String extData = data.substring( i, i + length );
-            i += length;
+            int extensionsLength = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
 
-            ExtensionI extension = extensionType.parse( extData );
+            for ( int end = i + extensionsLength; i < end; )
+            {
+                int extensionTypeVal = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+                Extension extensionType = Extension.fromValue( extensionTypeVal );
+                int length = data.charAt( i++ ) * 0x0100 + data.charAt( i++ );
+                String extData = data.substring( i, i + length );
+                i += length;
 
-            sh.extensions.add( extension );
+                ExtensionI extension = extensionType.parse( extData );
+
+                sh.extensions.add( extension );
+            }
         }
 
         return sh;

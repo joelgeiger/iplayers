@@ -422,6 +422,25 @@ public class TlsRecordTest
         //TODO
     }
 */
+
+    @Test
+    public void testParse10()
+    {
+        String serverHello = loadResource( "/samples/server_hello02.bin" );
+
+        assertEquals( 79, serverHello.length() );
+        TlsRecord record = TlsRecord.parse( serverHello );
+        assertEquals( ContentType.HANDSHAKE, record.getContentType() );
+        assertEquals( Version.TLS_1_2, record.getVersion() );
+        assertEquals( 0x004A, record.getLength() ); //74
+        List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
+        assertEquals( 1, protocolMessages.size() );
+        HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
+        assertEquals( HandshakeMessageType.ServerHello, hand.getHandshakeMessageType() );
+        assertEquals( 0x000046, hand.getLength() ); //70
+
+    }
+
     static private String loadResource( String path )
     {
         StringBuilder sBuf = new StringBuilder();

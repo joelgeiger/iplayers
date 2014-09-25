@@ -119,7 +119,6 @@ public class TlsRecordTest
         TlsRecord record = TlsRecord.parse( hello );
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x00B0, record.getLength() ); //176
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
@@ -183,7 +182,6 @@ public class TlsRecordTest
         TlsRecord record = TlsRecord.parse( serverHello );
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x0051, record.getLength() ); //81
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
@@ -203,7 +201,6 @@ public class TlsRecordTest
 
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x102C, record.getLength() ); //4140
 
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
@@ -229,7 +226,6 @@ public class TlsRecordTest
         TlsRecord record = TlsRecord.parse( bin );
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x0004, record.getLength() ); //4
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
@@ -248,7 +244,6 @@ public class TlsRecordTest
         TlsRecord record = TlsRecord.parse( hello );
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x00BA, record.getLength() ); //186
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );
@@ -323,7 +318,6 @@ public class TlsRecordTest
 
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x0051, record.getLength() ); //81
 
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
@@ -374,7 +368,6 @@ public class TlsRecordTest
 
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x0106, record.getLength() ); //262
 
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
@@ -398,7 +391,6 @@ public class TlsRecordTest
 
         assertEquals( ContentType.CHANGE_CIPHER_SPEC, record.getContentType() );
         assertEquals( Version.TLS_1_0, record.getVersion() );
-        assertEquals( 0x0001, record.getLength() ); //1
 
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
@@ -432,7 +424,6 @@ public class TlsRecordTest
         TlsRecord record = TlsRecord.parse( serverHello );
         assertEquals( ContentType.HANDSHAKE, record.getContentType() );
         assertEquals( Version.TLS_1_2, record.getVersion() );
-        assertEquals( 0x004A, record.getLength() ); //74
         List<ProtocolMessage> protocolMessages = record.getProtocolMessages();
         assertEquals( 1, protocolMessages.size() );
         HandshakeProtocol hand = (HandshakeProtocol)protocolMessages.get( 0 );

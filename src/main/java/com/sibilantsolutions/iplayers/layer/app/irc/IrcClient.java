@@ -4,8 +4,8 @@ import java.net.Socket;
 import java.util.Properties;
 
 import com.sibilantsolutions.iplayers.layer.app.irc.command.CommandFactory;
-import com.sibilantsolutions.iptools.util.LineParserBuffer;
-import com.sibilantsolutions.iptools.util.Socker;
+import com.sibilantsolutions.iptools.net.LineParserBuffer;
+import com.sibilantsolutions.iptools.net.SocketUtils;
 
 public class IrcClient
 {
@@ -27,10 +27,10 @@ public class IrcClient
         String hostName = properties.getProperty( HOST_NAME );
         int hostPort = Integer.parseInt( properties.getProperty( HOST_PORT ) );
 
-        Socket socket = Socker.connect( hostName, hostPort );
+        Socket socket = SocketUtils.connect( hostName, hostPort );
 
-        Socker.send( "NICK " + userNick + CRLF, socket );
-        Socker.send( "USER " + userUsername + ' ' + userUsername + ' ' + hostName + " :" + userRealName + CRLF, socket );
+        SocketUtils.send( "NICK " + userNick + CRLF, socket );
+        SocketUtils.send( "USER " + userUsername + ' ' + userUsername + ' ' + hostName + " :" + userRealName + CRLF, socket );
 
         LineParserBuffer listener = new LineParserBuffer();
         IrcDataProc idp = new IrcDataProc();
@@ -38,7 +38,7 @@ public class IrcClient
         cf.setServerStatus( new LogServerStatusImpl() );
         idp.setCommandFactory( cf );
         listener.setReceiver( idp );
-        Socker.readLoopThread( socket, listener );
+        SocketUtils.readLoopThread( socket, listener );
 
 //        log.info( "Sleeping..." );
 //        try
@@ -51,7 +51,7 @@ public class IrcClient
 //        log.info( "...Awake." );
 //
 //        final String CHANNEL = "#mytest123abc";
-//        Socker.send( "JOIN " + CHANNEL + CRLF, socket );
+//        SocketUtils.send( "JOIN " + CHANNEL + CRLF, socket );
 //
 //
 //        log.info( "Sleeping..." );
@@ -65,7 +65,7 @@ public class IrcClient
 //        log.info( "...Awake." );
 //
 //        String msg = "Hello, how are you?";
-//        Socker.send( "PRIVMSG " + CHANNEL + " :" + msg + CRLF, socket );
+//        SocketUtils.send( "PRIVMSG " + CHANNEL + " :" + msg + CRLF, socket );
 //
 //
 //        log.info( "Sleeping..." );
@@ -78,7 +78,7 @@ public class IrcClient
 //        }
 //        log.info( "...Awake." );
 //
-//        Socker.send( "PRIVMSG " + "unicrown`" + " :" + "Frogger." + CRLF, socket );
+//        SocketUtils.send( "PRIVMSG " + "unicrown`" + " :" + "Frogger." + CRLF, socket );
 
     }
 

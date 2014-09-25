@@ -1,7 +1,7 @@
 package com.sibilantsolutions.iplayers.layer.app.irc.command;
 
 import com.sibilantsolutions.iplayers.layer.app.irc.IrcClient;
-import com.sibilantsolutions.iptools.util.Socker;
+import com.sibilantsolutions.iptools.net.SocketUtils;
 
 public class CMD_PING implements Command
 {
@@ -11,7 +11,7 @@ public class CMD_PING implements Command
     {
         String response = "PONG " + ctx.getIrcLine().getParameters() + IrcClient.CRLF;
 
-        Socker.send( response, ctx.getReceiveEvt().getSource() );
+        SocketUtils.send( response, ctx.getReceiveEvt().getSource() );
     }
 
 }

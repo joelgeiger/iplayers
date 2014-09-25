@@ -16,7 +16,7 @@ import com.sibilantsolutions.iplayers.layer.app.http.domain.RequestLine;
 import com.sibilantsolutions.iptools.event.LostConnectionEvt;
 import com.sibilantsolutions.iptools.event.ReceiveEvt;
 import com.sibilantsolutions.iptools.event.SocketListenerI;
-import com.sibilantsolutions.iptools.util.Socker;
+import com.sibilantsolutions.iptools.net.SocketUtils;
 
 
 //TODO: Enforce maximum length of method/uri/version/overall request line.
@@ -90,17 +90,17 @@ public class HttpReceiver implements SocketListenerI
                         String responseLine = "HTTP/1.1 200 OK" + Constants.CRLF;
                         try
                         {
-                            Socker.send( responseLine, evt.getSource() );
-                            Socker.send( HttpHeaders.DATE + ": " + HttpDateFormat.format( new Date() ) + Constants.CRLF, evt.getSource() );
-                            Socker.send( HttpHeaders.CONTENT_LENGTH + ": " + length + Constants.CRLF, evt.getSource() );
+                            SocketUtils.send( responseLine, evt.getSource() );
+                            SocketUtils.send( HttpHeaders.DATE + ": " + HttpDateFormat.format( new Date() ) + Constants.CRLF, evt.getSource() );
+                            SocketUtils.send( HttpHeaders.CONTENT_LENGTH + ": " + length + Constants.CRLF, evt.getSource() );
                             //TODO: Headers here.
-                            Socker.send( Constants.CRLF, evt.getSource() );
+                            SocketUtils.send( Constants.CRLF, evt.getSource() );
 
                             byte[] buf = new byte[1024];
                             int numRead;
                             while ( ( numRead = fis.read( buf ) ) != -1 )
                             {
-                                Socker.send( buf, 0, numRead, evt.getSource() );
+                                SocketUtils.send( buf, 0, numRead, evt.getSource() );
                             }
                         }
                         catch ( IOException e )

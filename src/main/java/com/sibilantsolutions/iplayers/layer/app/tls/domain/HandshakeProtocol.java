@@ -2,9 +2,9 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 import java.nio.ByteBuffer;
 
-import com.sibilantsolutions.iptools.util.Convert;
-import com.sibilantsolutions.iptools.util.HexDump;
-import com.sibilantsolutions.iptools.util.HexUtils;
+import com.sibilantsolutions.utils.util.Convert;
+import com.sibilantsolutions.utils.util.HexDump;
+import com.sibilantsolutions.utils.util.HexUtils;
 
 public class HandshakeProtocol extends ProtocolMessage
 {

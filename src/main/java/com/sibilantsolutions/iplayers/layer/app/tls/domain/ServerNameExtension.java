@@ -2,7 +2,7 @@ package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
 import java.nio.ByteBuffer;
 
-import com.sibilantsolutions.iptools.util.HexDump;
+import com.sibilantsolutions.utils.util.HexDump;
 
 public class ServerNameExtension implements ExtensionI
 {

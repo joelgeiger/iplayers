@@ -1,6 +1,6 @@
 package com.sibilantsolutions.iplayers.layer.app.tls.domain;
 
-import com.sibilantsolutions.iptools.util.HexUtils;
+import com.sibilantsolutions.utils.util.HexUtils;
 
 public enum HandshakeMessageType
 {

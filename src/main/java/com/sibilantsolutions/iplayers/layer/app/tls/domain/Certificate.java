@@ -8,7 +8,7 @@ import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sibilantsolutions.iptools.util.Convert;
+import com.sibilantsolutions.utils.util.Convert;
 
 public class Certificate implements HandshakeMessageI
 {
